@@ -1,0 +1,746 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#7c5cff">
+<meta name="description" content="NEXORA — gestor de productividad personal.">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<title>NEXORA — Productivity OS</title>
+<style>
+:root{
+  --bg:#f5f6fa;--surface:#fff;--surface2:#f0f1f6;--text:#171923;--muted:#737789;
+  --border:#e4e6ee;--primary:#7c5cff;--primary2:#6546ef;--soft:#eeeaff;
+  --green:#20b26b;--green-soft:#e4f8ef;--red:#ed5b68;--red-soft:#ffeaed;
+  --yellow:#e8a62b;--yellow-soft:#fff4db;--blue:#4285f4;--blue-soft:#e8f1ff;
+  --shadow:0 12px 35px rgba(24,26,40,.07);--radius:18px;--sidebar:255px;
+}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+body{margin:0;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;background:var(--bg);color:var(--text);transition:.25s}
+button,input,textarea,select{font:inherit}button{cursor:pointer;border:0}
+button:focus-visible,input:focus-visible,textarea:focus-visible,select:focus-visible{outline:3px solid rgba(124,92,255,.22);outline-offset:2px}
+.app{min-height:100vh;display:flex}.sidebar{width:var(--sidebar);background:var(--surface);border-right:1px solid var(--border);position:fixed;inset:0 auto 0 0;padding:22px 15px;z-index:30;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:4px 10px 25px}.brand-logo{width:39px;height:39px;border-radius:12px;background:linear-gradient(135deg,#8d73ff,#6546ef);color:#fff;display:grid;place-items:center;font-weight:900;box-shadow:0 8px 18px rgba(124,92,255,.25)}.brand strong{font-size:19px}.brand small{display:block;color:var(--muted);font-size:10px;margin-top:1px}
+.nav-label{font-size:10px;font-weight:800;color:#9a9eac;letter-spacing:.11em;padding:12px 11px 7px;text-transform:uppercase}.nav{display:grid;gap:4px}.nav button{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border-radius:11px;background:transparent;color:var(--muted);text-align:left;font-weight:700;font-size:13px;transition:.2s}.nav button:hover{background:var(--surface2);color:var(--text)}.nav button.active{background:var(--soft);color:var(--primary)}.nav-icon{width:21px;text-align:center;font-size:16px}.side-bottom{margin-top:auto}.pro-card{padding:15px;border-radius:15px;background:linear-gradient(145deg,#171322,#29203f);color:#fff;box-shadow:var(--shadow)}.pro-card b{font-size:13px}.pro-card p{font-size:11px;color:#c9c3d8;line-height:1.5;margin:7px 0 12px}.pro-card button{background:#fff;color:#251d38;border-radius:9px;padding:8px 11px;font-weight:800;font-size:11px}.main{margin-left:var(--sidebar);width:calc(100% - var(--sidebar));min-width:0}.topbar{height:70px;background:rgba(255,255,255,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:20}.top-left{display:flex;align-items:center;gap:10px}.page-title{font-size:18px;font-weight:850}.search{width:min(330px,35vw);position:relative}.search input{width:100%;border:1px solid var(--border);background:var(--surface2);border-radius:11px;padding:10px 35px 10px 35px;color:var(--text);font-size:12px}.search span{position:absolute;left:12px;top:9px;color:var(--muted)}.search kbd{position:absolute;right:8px;top:7px;border:1px solid var(--border);border-radius:5px;padding:2px 5px;color:var(--muted);font-size:9px;background:var(--surface)}.top-actions{display:flex;gap:8px;align-items:center}.icon-btn{width:38px;height:38px;border-radius:11px;background:var(--surface2);color:var(--muted);display:grid;place-items:center}.avatar{width:37px;height:37px;border-radius:50%;background:linear-gradient(135deg,#f4c7ff,#9e86ff);display:grid;place-items:center;font-weight:900;color:#35255f;font-size:12px}
+.content{padding:28px;max-width:1500px;margin:auto}.view{display:none;animation:rise .3s ease}.view.active{display:block}@keyframes rise{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.welcome{background:linear-gradient(135deg,#21183b,#3b2b70 55%,#765bdf);border-radius:23px;padding:27px 28px;color:#fff;display:flex;justify-content:space-between;gap:20px;align-items:center;box-shadow:0 18px 40px rgba(61,43,112,.18);overflow:hidden;position:relative}.welcome:after{content:"";position:absolute;width:250px;height:250px;border:1px solid rgba(255,255,255,.12);border-radius:50%;right:10%;top:-140px}.welcome h1{margin:0 0 7px;font-size:26px}.welcome p{margin:0;color:#d8d2e9;font-size:13px}.welcome .date-chip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.15);padding:10px 13px;border-radius:12px;font-size:11px;white-space:nowrap;z-index:1}.section-head{display:flex;align-items:center;justify-content:space-between;margin:25px 0 13px}.section-head h2{font-size:16px;margin:0}.section-head p{font-size:11px;color:var(--muted);margin:4px 0 0}.primary{background:var(--primary);color:#fff;padding:10px 14px;border-radius:10px;font-weight:800;font-size:12px;box-shadow:0 7px 16px rgba(124,92,255,.2)}.primary:hover{background:var(--primary2)}.ghost{background:var(--surface);border:1px solid var(--border);color:var(--text);padding:9px 13px;border-radius:10px;font-weight:750;font-size:12px}.danger{color:var(--red)!important}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:13px;margin-top:18px}.stat,.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:0 5px 20px rgba(20,22,35,.035)}.stat{padding:18px}.stat-top{display:flex;justify-content:space-between;align-items:center}.stat-icon{width:35px;height:35px;border-radius:10px;background:var(--soft);display:grid;place-items:center}.stat .label{font-size:11px;color:var(--muted);font-weight:700;margin-top:13px}.stat .value{font-size:25px;font-weight:900;margin-top:2px}.stat .delta{font-size:10px;color:var(--green);font-weight:750;margin-top:4px}
+.grid2{display:grid;grid-template-columns:1.45fr .85fr;gap:16px}.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{padding:18px}.card-title{font-size:13px;font-weight:850;margin:0}.muted{color:var(--muted)}.tiny{font-size:10px}.empty{padding:32px 15px;text-align:center;color:var(--muted);font-size:12px}.empty .big{font-size:28px;margin-bottom:8px}
+.task-list{display:grid;gap:8px}.task-row{display:flex;align-items:center;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface);transition:.18s}.task-row:hover{transform:translateY(-1px);box-shadow:0 7px 20px rgba(20,22,35,.05)}.check{width:20px;height:20px;border-radius:7px;border:2px solid #c8cad5;background:transparent;flex:0 0 auto;display:grid;place-items:center;color:#fff;font-size:11px}.check.done{background:var(--primary);border-color:var(--primary)}.task-info{min-width:0;flex:1}.task-title{font-weight:750;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.task-title.done{text-decoration:line-through;color:var(--muted)}.task-meta{font-size:9px;color:var(--muted);display:flex;gap:8px;margin-top:4px;flex-wrap:wrap}.badge{display:inline-flex;align-items:center;padding:4px 7px;border-radius:999px;font-size:9px;font-weight:800}.b-high{background:var(--red-soft);color:var(--red)}.b-med{background:var(--yellow-soft);color:#a87514}.b-low{background:var(--green-soft);color:#188552}.b-blue{background:var(--blue-soft);color:var(--blue)}.b-purple{background:var(--soft);color:var(--primary)}
+.progress{height:7px;background:var(--surface2);border-radius:999px;overflow:hidden}.progress i{display:block;height:100%;background:linear-gradient(90deg,var(--primary),#a78cff);border-radius:999px;transition:width .5s ease}.progress.green i{background:linear-gradient(90deg,#20b26b,#67d89f)}
+.summary-ring{width:145px;height:145px;border-radius:50%;margin:8px auto 15px;background:conic-gradient(var(--primary) var(--pct),var(--surface2) 0);display:grid;place-items:center;position:relative}.summary-ring:after{content:"";position:absolute;inset:12px;background:var(--surface);border-radius:50%}.ring-content{z-index:1;text-align:center}.ring-content b{font-size:26px;display:block}.ring-content span{font-size:9px;color:var(--muted)}
+.mini-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.mini{padding:10px;border-radius:11px;background:var(--surface2);text-align:center}.mini b{display:block;font-size:16px}.mini span{font-size:9px;color:var(--muted)}
+.quick{display:grid;grid-template-columns:repeat(4,1fr);gap:9px}.quick button{padding:14px 8px;border:1px solid var(--border);background:var(--surface);border-radius:13px;text-align:left}.quick button:hover{border-color:#cfc6ff;background:var(--soft)}.quick b{display:block;font-size:11px;margin-top:8px}.quick span{font-size:9px;color:var(--muted)}
+.important{border-left:3px solid var(--red)!important}
+.filters{display:flex;gap:7px;flex-wrap:wrap}.filter{padding:8px 11px;border-radius:9px;background:var(--surface2);color:var(--muted);font-size:11px;font-weight:750}.filter.active{background:var(--soft);color:var(--primary)}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.toolbar .grow{flex:1}.select{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:9px;padding:8px 10px;font-size:11px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:15px;padding:15px;display:flex;gap:12px;align-items:flex-start}.task-card .check{margin-top:1px}.task-card-main{flex:1;min-width:0}.task-card-actions{display:flex;gap:4px}.mini-btn{width:29px;height:29px;border-radius:8px;background:var(--surface2);color:var(--muted)}.mini-btn:hover{color:var(--primary)}.description{font-size:10px;color:var(--muted);line-height:1.5;margin:6px 0}.subtasks{margin-top:10px;display:grid;gap:5px}.subtask{font-size:10px;color:var(--muted);display:flex;gap:7px;align-items:center}.subcheck{width:14px;height:14px;border:1px solid #c7c9d2;border-radius:4px;display:grid;place-items:center;font-size:8px}.subcheck.done{background:var(--green);color:#fff;border-color:var(--green)}.task-grid{display:grid;gap:9px}
+.page-banner{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:18px}.page-banner h1{font-size:24px;margin:0}.page-banner p{font-size:11px;color:var(--muted);margin:5px 0 0}
+.project-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.project-card{padding:18px;border:1px solid var(--border);background:var(--surface);border-radius:17px}.project-dot{width:11px;height:11px;border-radius:50%;display:inline-block;margin-right:7px}.project-card h3{font-size:14px;margin:0 0 14px}.project-card .numbers{display:flex;justify-content:space-between;font-size:10px;color:var(--muted);margin-bottom:8px}.project-actions{display:flex;gap:6px;margin-top:13px}
+.calendar-card{padding:18px}.cal-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:15px}.cal-title{font-size:16px;font-weight:850}.cal-actions{display:flex;gap:5px}.cal-week,.cal-days{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.cal-week div{text-align:center;color:var(--muted);font-size:9px;font-weight:800;padding:5px}.day{min-height:84px;border:1px solid var(--border);border-radius:10px;padding:7px;background:var(--surface);cursor:pointer}.day:hover{border-color:#cfc6ff}.day.muted-day{opacity:.4}.day.today{box-shadow:inset 0 0 0 2px var(--primary)}.day-num{font-size:10px;font-weight:800}.day-task{font-size:8px;padding:4px 5px;border-radius:5px;background:var(--soft);color:var(--primary);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.day-task.high{background:var(--red-soft);color:var(--red)}
+.focus-wrap{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.focus-card{text-align:center;padding:30px}.timer{font-size:76px;font-weight:900;letter-spacing:-4px;margin:20px 0;background:linear-gradient(135deg,var(--primary),#a891ff);-webkit-background-clip:text;background-clip:text;color:transparent}.mode-tabs{display:flex;justify-content:center;gap:6px}.mode-tabs button{padding:8px 12px;border-radius:8px;background:var(--surface2);font-size:10px;color:var(--muted);font-weight:800}.mode-tabs button.active{background:var(--soft);color:var(--primary)}.timer-actions{display:flex;justify-content:center;gap:8px}.timer-actions button{min-width:90px}.dots{display:flex;justify-content:center;gap:6px;margin-top:20px}.dot{width:7px;height:7px;border-radius:50%;background:var(--border)}.dot.on{background:var(--primary)}
+.goal-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:13px}.goal-card{padding:17px;background:var(--surface);border:1px solid var(--border);border-radius:16px}.goal-head{display:flex;justify-content:space-between;gap:10px}.goal-title{font-weight:850;font-size:13px}.goal-percent{font-weight:900;color:var(--primary)}.goal-desc{font-size:10px;color:var(--muted);margin:6px 0 13px}.goal-foot{display:flex;justify-content:space-between;font-size:9px;color:var(--muted);margin-top:8px}
+.streak{background:linear-gradient(135deg,#fff5e5,#fff);border:1px solid #f2dfbc}.streak-number{font-size:42px;font-weight:950;color:#d78919}.flame{font-size:28px}.achievement-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}.achievement{padding:16px;border:1px solid var(--border);border-radius:15px;background:var(--surface);text-align:center;opacity:.45}.achievement.unlocked{opacity:1;box-shadow:0 7px 20px rgba(20,22,35,.05)}.achievement-icon{font-size:27px}.achievement b{display:block;font-size:11px;margin-top:8px}.achievement span{display:block;font-size:9px;color:var(--muted);margin-top:4px}
+.chart{display:flex;align-items:flex-end;gap:10px;height:190px;padding:18px 5px 5px}.bar-col{flex:1;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:6px}.bar-value{font-size:9px;color:var(--muted)}.bar{width:100%;max-width:36px;min-height:3px;background:linear-gradient(180deg,#a58fff,var(--primary));border-radius:7px 7px 3px 3px;transition:height .5s}.bar-label{font-size:9px;color:var(--muted)}
+.analytics-grid{display:grid;grid-template-columns:1.2fr .8fr;gap:15px}.metric-list{display:grid;gap:9px}.metric-row{display:flex;justify-content:space-between;align-items:center;font-size:11px}.metric-row b{font-size:12px}.category-list{display:grid;gap:9px}.cat-row{display:grid;grid-template-columns:90px 1fr 30px;gap:8px;align-items:center;font-size:10px}.cat-bar{height:6px;background:var(--surface2);border-radius:10px;overflow:hidden}.cat-bar i{display:block;height:100%;background:var(--primary)}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:15px}.setting-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}.setting-row:last-child{border-bottom:0}.setting-row b{font-size:11px}.setting-row span{display:block;font-size:9px;color:var(--muted);margin-top:3px}.switch{width:42px;height:23px;border-radius:99px;background:var(--border);padding:3px}.switch i{display:block;width:17px;height:17px;border-radius:50%;background:#fff;transition:.2s}.switch.on{background:var(--primary)}.switch.on i{transform:translateX(19px)}
+.overlay{display:none;position:fixed;inset:0;background:rgba(13,14,22,.5);backdrop-filter:blur(4px);z-index:50;align-items:center;justify-content:center;padding:15px}.overlay.open{display:flex}.modal{width:min(610px,100%);max-height:92vh;overflow:auto;background:var(--surface);border-radius:20px;padding:22px;box-shadow:0 25px 80px rgba(0,0,0,.2);animation:pop .2s ease}@keyframes pop{from{opacity:0;transform:scale(.97)}to{opacity:1;transform:none}}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:17px}.modal h2{font-size:17px;margin:0}.close{width:32px;height:32px;border-radius:9px;background:var(--surface2);color:var(--muted)}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:11px}.field{display:grid;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:10px;font-weight:800;color:var(--muted)}.field input,.field textarea,.field select{width:100%;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:9px;padding:10px;font-size:11px}.field textarea{min-height:80px;resize:vertical}.modal-foot{display:flex;justify-content:flex-end;gap:8px;margin-top:18px}.checkline{display:flex;align-items:center;gap:8px;font-size:11px;color:var(--muted)}.checkline input{accent-color:var(--primary)}
+.toast{position:fixed;right:20px;bottom:20px;background:#1b1c24;color:#fff;padding:11px 14px;border-radius:11px;font-size:11px;z-index:100;box-shadow:0 15px 40px rgba(0,0,0,.2);opacity:0;transform:translateY(10px);pointer-events:none;transition:.25s}.toast.show{opacity:1;transform:none}
+.mobile-nav{display:none}.mobile-menu{display:none}
+body.dark{--bg:#0f1016;--surface:#171921;--surface2:#20222d;--text:#f2f3f7;--muted:#969aaa;--border:#2a2d38;--soft:#292342;--green-soft:#173528;--red-soft:#3a2025;--yellow-soft:#3a301b;--blue-soft:#1d2d46;--shadow:0 12px 35px rgba(0,0,0,.2)}body.dark .topbar{background:rgba(23,25,33,.84)}body.dark .welcome{background:linear-gradient(135deg,#21183b,#2b2350 55%,#5945a8)}body.dark .streak{background:linear-gradient(135deg,#2a2318,#171921)}
+@media(max-width:1100px){.stats{grid-template-columns:repeat(2,1fr)}.grid2,.focus-wrap,.analytics-grid{grid-template-columns:1fr}.project-grid{grid-template-columns:repeat(2,1fr)}.achievement-grid{grid-template-columns:repeat(2,1fr)}}
+@media(max-width:760px){
+  .sidebar{display:none}.main{margin-left:0;width:100%;padding-bottom:72px}.topbar{height:62px;padding:0 14px}.page-title{font-size:15px}.search{display:none}.content{padding:15px}.welcome{padding:20px;border-radius:18px}.welcome h1{font-size:20px}.welcome .date-chip{display:none}.stats{gap:8px;margin-top:10px}.stat{padding:13px;border-radius:14px}.stat .value{font-size:21px}.stat .label{font-size:9px}.stat-icon{width:30px;height:30px}.grid3,.goal-grid,.settings-grid,.project-grid{grid-template-columns:1fr}.quick{grid-template-columns:repeat(2,1fr)}.page-banner{align-items:flex-start}.page-banner h1{font-size:20px}.card{padding:14px}.day{min-height:62px;padding:5px}.day-task{display:none}.cal-week,.cal-days{gap:3px}.timer{font-size:58px}.focus-card{padding:20px 12px}.achievement-grid{grid-template-columns:repeat(2,1fr)}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}.mobile-nav{position:fixed;display:grid;grid-template-columns:repeat(5,1fr);left:0;right:0;bottom:0;height:64px;background:rgba(255,255,255,.94);backdrop-filter:blur(16px);border-top:1px solid var(--border);z-index:40;padding-bottom:env(safe-area-inset-bottom)}body.dark .mobile-nav{background:rgba(23,25,33,.95)}.mobile-nav button{background:transparent;color:var(--muted);font-size:9px;font-weight:750}.mobile-nav button span{display:block;font-size:17px;margin-bottom:3px}.mobile-nav button.active{color:var(--primary)}}
+
+.tf23-kanban{display:grid;grid-template-columns:repeat(4,minmax(240px,1fr));gap:14px;overflow-x:auto;padding-bottom:8px}
+.tf23-column{background:var(--surface-2,#f7f7fb);border:1px solid var(--border);border-radius:18px;min-height:310px;padding:12px}
+.tf23-column.drag-over{outline:2px dashed var(--primary);background:rgba(124,92,255,.07)}
+.tf23-col-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-weight:800}
+.tf23-count{font-size:12px;padding:3px 8px;border-radius:99px;background:var(--surface);color:var(--muted)}
+.tf23-card{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:12px;margin:8px 0;cursor:grab;box-shadow:0 5px 16px rgba(0,0,0,.04)}
+.tf23-card:active{cursor:grabbing}.tf23-card h4{margin:0 0 7px;font-size:14px}
+.tf23-meta{display:flex;gap:6px;flex-wrap:wrap;font-size:11px;color:var(--muted)}
+.tf23-chip{padding:3px 7px;border-radius:999px;background:var(--surface-2,#f4f4f7)}
+@media(max-width:1050px){.tf23-kanban{grid-template-columns:repeat(4,270px)}}
+
+
+.advanced-input{width:135px;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:9px;padding:9px 10px;font-size:10px}.bell-btn{position:relative}.notification-badge{position:absolute;top:4px;right:4px;min-width:14px;height:14px;padding:0 3px;border-radius:99px;background:var(--red);color:#fff;font-size:8px;display:grid;place-items:center;font-weight:900}.notification-badge:empty{display:none}.attachment-list{display:flex;gap:6px;flex-wrap:wrap}.attachment-chip{display:inline-flex;align-items:center;gap:5px;padding:5px 8px;border-radius:8px;background:var(--surface2);font-size:9px;color:var(--muted)}.tag-badge{display:inline-flex;padding:3px 7px;border-radius:99px;background:var(--soft);color:var(--primary);font-size:9px;font-weight:800}.command-modal{width:min(680px,100%);max-height:82vh;overflow:auto;background:var(--surface);border-radius:20px;padding:18px;box-shadow:0 25px 80px rgba(0,0,0,.22)}.command-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}.command-head b{display:block;font-size:15px}.command-head span{display:block;font-size:10px;color:var(--muted);margin-top:3px}.command-input{width:100%;padding:14px 15px;border:1px solid var(--border);background:var(--surface2);color:var(--text);border-radius:12px;font-size:13px}.command-results{display:grid;gap:6px;margin-top:10px}.command-item{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--border);background:var(--surface);border-radius:11px;text-align:left}.command-item:hover{border-color:#cfc6ff;background:var(--soft)}.command-icon{width:30px;height:30px;border-radius:9px;background:var(--surface2);display:grid;place-items:center}.command-copy{min-width:0;flex:1}.command-copy b{font-size:11px}.command-copy span{display:block;font-size:9px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.notification-list{display:grid;gap:8px}.notification-item{display:flex;gap:10px;padding:11px;border:1px solid var(--border);border-radius:12px}.notification-item.unread{background:var(--soft);border-color:#d8d0ff}.notification-dot{width:8px;height:8px;border-radius:50%;background:var(--primary);margin-top:5px;flex:0 0 auto}.notification-item.read .notification-dot{background:var(--border)}.notification-copy{flex:1}.notification-copy b{font-size:11px}.notification-copy p{font-size:9px;color:var(--muted);margin:3px 0}.notification-copy small{font-size:8px;color:var(--muted)}
+@media(max-width:760px){.advanced-input{width:100%}.toolbar{align-items:stretch}.toolbar .grow{display:none}.toolbar .select{width:100%}.command-modal{padding:14px}.top-actions{gap:5px}.notification-badge{top:2px;right:2px}}
+
+/* V3 PRODUCT / ACCOUNT / TEAM */
+.profile-avatar{width:54px;height:54px;border-radius:16px;background:linear-gradient(135deg,#8d73ff,#6546ef);color:#fff;display:grid;place-items:center;font-weight:950;font-size:18px;box-shadow:0 10px 25px rgba(124,92,255,.25)}
+.profile-hero{display:flex;align-items:center;gap:15px;padding:20px;border-radius:18px;background:linear-gradient(135deg,#21183b,#3b2b70 55%,#765bdf);color:#fff}.profile-hero p{margin:4px 0 0;color:#d8d2e9;font-size:11px}.profile-hero h2{margin:0;font-size:20px}.account-badge{display:inline-flex;padding:5px 8px;border-radius:99px;background:rgba(255,255,255,.13);font-size:9px;font-weight:800;margin-top:8px}.profile-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:15px;margin-top:15px}.profile-stat{padding:14px;border-radius:13px;background:var(--surface2)}.profile-stat b{font-size:22px;display:block}.profile-stat span{font-size:9px;color:var(--muted)}.member-list{display:grid;gap:8px}.member{display:flex;align-items:center;gap:10px;padding:11px;border:1px solid var(--border);border-radius:12px}.member-avatar{width:32px;height:32px;border-radius:10px;background:var(--soft);color:var(--primary);display:grid;place-items:center;font-weight:900;font-size:10px}.member-main{min-width:0;flex:1}.member-main b{font-size:11px}.member-main span{display:block;color:var(--muted);font-size:9px;margin-top:2px}.role{font-size:8px;font-weight:800;padding:4px 7px;border-radius:99px;background:var(--surface2);color:var(--muted)}.activity-list{display:grid;gap:8px}.activity{display:flex;gap:9px;padding:10px 0;border-bottom:1px solid var(--border)}.activity:last-child{border-bottom:0}.activity-icon{width:28px;height:28px;border-radius:9px;background:var(--soft);display:grid;place-items:center}.activity b{font-size:10px}.activity span{display:block;color:var(--muted);font-size:8px;margin-top:2px}.share-box{background:var(--surface2);border-radius:12px;padding:12px;font-size:9px;color:var(--muted);line-height:1.6;word-break:break-word}.pro-banner{padding:18px;border-radius:18px;background:linear-gradient(135deg,#171322,#2b2142);color:#fff;margin-top:15px}.pro-banner h2{margin:0;font-size:17px}.pro-banner p{color:#c9c3d8;font-size:10px;line-height:1.5;max-width:700px}.pro-pills{display:flex;gap:7px;flex-wrap:wrap;margin:10px 0}.pro-pill{padding:6px 8px;border:1px solid rgba(255,255,255,.12);border-radius:99px;font-size:8px;color:#ddd5ed}.install-status{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px;border:1px solid var(--border);border-radius:12px;background:var(--surface2)}.status-dot{width:8px;height:8px;border-radius:50%;background:var(--green);display:inline-block;margin-right:6px}.cloud-note{padding:12px;border-radius:12px;background:var(--blue-soft);color:#315fa8;font-size:10px;line-height:1.5}.top-profile{display:flex;align-items:center;gap:7px;background:transparent;padding:0}.top-profile .avatar{flex:0 0 auto}.profile-name-mini{font-size:10px;font-weight:800;max-width:85px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media(max-width:900px){.profile-grid{grid-template-columns:1fr}.profile-name-mini{display:none}}
+
+</style>
+</head>
+<body>
+<div class="app">
+<aside class="sidebar">
+  <div class="brand"><div class="brand-logo">NX</div><div><strong>NEXORA</strong><small>PRODUCTIVITY OS</small></div></div>
+  <div class="nav-label">Workspace</div>
+  <nav class="nav" id="sidebarNav">
+    <button data-view="dashboard" class="active"><span class="nav-icon">⌂</span>Inicio</button>
+    <button data-view="today"><span class="nav-icon">☀</span>Mi día</button>
+    <button data-view="tasks"><span class="nav-icon">✓</span>Mis tareas</button>
+    <button data-view="projects"><span class="nav-icon">▦</span>Proyectos</button>
+    <button data-view="kanban"><span class="nav-icon">◫</span>Kanban</button>
+    <button data-view="calendar"><span class="nav-icon">▣</span>Calendario</button>
+    <button data-view="goals"><span class="nav-icon">◎</span>Objetivos</button>
+    <button data-view="focus"><span class="nav-icon">◷</span>Focus</button>
+    <button data-view="analytics"><span class="nav-icon">◒</span>Estadísticas</button>
+    <button data-view="achievements"><span class="nav-icon">♛</span>Logros</button>
+  </nav>
+  <div class="nav-label">Cuenta</div>
+  <nav class="nav"><button data-view="profile"><span class="nav-icon">◉</span>Mi cuenta</button></nav>
+  <div class="side-bottom">
+    <div class="nav-label">Sistema</div>
+    <nav class="nav"><button data-view="settings"><span class="nav-icon">⚙</span>Configuración</button></nav>
+    <div class="pro-card"><b>NEXORA Pro</b><p>Convierte tus objetivos en resultados. Sigue tu progreso y mantén el enfoque.</p><button onclick="showToast('La versión Pro estará disponible próximamente')">Ver Pro</button></div>
+  </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+  <div class="top-left"><div class="page-title" id="pageTitle">Inicio</div></div>
+  <div class="top-actions">
+    <div class="search"><span>⌕</span><input id="globalSearch" placeholder="Buscar tareas..."><kbd>Ctrl K</kbd></div>
+    <button class="icon-btn" id="themeBtn" title="Cambiar tema">☾</button>
+    <button class="icon-btn bell-btn" id="notifyBtn" title="Centro de notificaciones">♧<span id="notificationBadge" class="notification-badge">0</span></button>
+    <button class="top-profile" onclick="switchView('profile')" title="Mi cuenta"><div class="avatar" id="topAvatar">TF</div><span class="profile-name-mini" id="topProfileName">Mi cuenta</span></button>
+  </div>
+</header>
+
+<div class="content">
+<section id="view-dashboard" class="view active">
+  <div class="welcome"><div><h1 id="greeting">Buenas tardes 👋</h1><p>Organiza tu día. Ejecuta lo importante. Mantén el ritmo.</p></div><div class="date-chip" id="todayChip"></div></div>
+  <div class="stats" id="dashStats"></div>
+  <div class="section-head"><div><h2>Acciones rápidas</h2><p>Lo que puedes hacer ahora mismo.</p></div></div>
+  <div class="quick">
+    <button onclick="openTaskModal()"><span>➕</span><b>Nueva tarea</b><span>Captura algo pendiente</span></button>
+    <button onclick="openGoalModal()"><span>🎯</span><b>Nuevo objetivo</b><span>Define un resultado</span></button>
+    <button onclick="openProjectModal()"><span>📁</span><b>Nuevo proyecto</b><span>Organiza tu trabajo</span></button>
+    <button onclick="switchView('focus')"><span>⏱️</span><b>Iniciar Focus</b><span>Trabaja sin distracciones</span></button>
+  </div>
+  <div class="section-head"><div><h2>Tu productividad</h2><p>Una vista rápida de cómo vas.</p></div><button class="ghost" onclick="switchView('analytics')">Ver analíticas →</button></div>
+  <div class="grid2">
+    <div class="card"><div class="card-title">Tareas recientes</div><div id="dashTasks" class="task-list" style="margin-top:12px"></div></div>
+    <div class="card"><div class="card-title">Resumen del día</div><div id="daySummary"></div></div>
+  </div>
+  <div class="section-head"><div><h2>Racha</h2><p>La constancia gana a la motivación.</p></div></div>
+  <div class="grid3">
+    <div class="card streak"><div style="display:flex;justify-content:space-between"><div><div class="tiny muted">RACHA ACTUAL</div><div class="streak-number" id="streakCurrent">0</div><div class="tiny muted">días productivos</div></div><div class="flame">🔥</div></div></div>
+    <div class="card"><div class="tiny muted">MEJOR RACHA</div><div style="font-size:34px;font-weight:950;margin-top:7px" id="streakBest">0</div><div class="tiny muted">récord histórico</div></div>
+    <div class="card"><div class="tiny muted">FOCUS TOTAL</div><div style="font-size:34px;font-weight:950;margin-top:7px" id="focusTotal">0h</div><div class="tiny muted">tiempo concentrado</div></div>
+  </div>
+</section>
+
+<section id="view-today" class="view">
+  <div class="page-banner"><div><h1>Mi día ☀</h1><p id="todaySubtitle"></p></div><button class="primary" onclick="openTaskModal(true)">＋ Añadir tarea</button></div>
+  <div class="grid2">
+    <div class="card"><div class="section-head" style="margin:0 0 13px"><div><h2>Prioridades de hoy</h2><p>Lo importante primero.</p></div></div><div id="todayImportant" class="task-list"></div></div>
+    <div class="card"><div class="section-head" style="margin:0 0 13px"><div><h2>Progreso</h2><p>Tu día en números.</p></div></div><div id="todayProgress"></div></div>
+  </div>
+  <div class="section-head"><div><h2>Todas las tareas de hoy</h2></div></div><div id="todayTasks" class="task-grid"></div>
+</section>
+
+<section id="view-tasks" class="view">
+  <div class="page-banner"><div><h1>Mis tareas</h1><p>Todo lo que tienes que ejecutar.</p></div><button class="primary" onclick="openTaskModal()">＋ Nueva tarea</button></div>
+  <div class="card" style="margin-bottom:13px"><div class="toolbar"><div class="filters" id="taskFilters">
+    <button class="filter active" data-filter="all">Todas</button><button class="filter" data-filter="today">Hoy</button><button class="filter" data-filter="pending">Pendientes</button><button class="filter" data-filter="completed">Completadas</button><button class="filter" data-filter="high">Alta prioridad</button>
+  </div><div class="grow"></div><select class="select" id="projectFilter"><option value="all">Todos los proyectos</option></select><input class="advanced-input" id="tagFilter" placeholder="Etiqueta..." maxlength="40"><select class="select" id="sortTasks"><option value="smart">Orden inteligente</option><option value="date">Fecha</option><option value="priority">Prioridad</option><option value="created">Más recientes</option><option value="title">Nombre A-Z</option></select></div></div>
+  <div id="tasksList" class="task-grid"></div>
+</section>
+
+<section id="view-projects" class="view">
+  <div class="page-banner"><div><h1>Proyectos</h1><p>Divide tus metas en espacios de trabajo.</p></div><button class="primary" onclick="openProjectModal()">＋ Nuevo proyecto</button></div>
+  <div id="projectGrid" class="project-grid"></div>
+</section>
+
+
+<section id="view-kanban" class="view">
+  <div class="page-banner">
+    <div><h1>Kanban</h1><p>Organiza el trabajo visualmente y mueve cada tarea según su estado.</p></div>
+    <button class="primary" onclick="openTaskModal()">＋ Nueva tarea</button>
+  </div>
+  <div class="card">
+    <div class="section-head" style="margin-bottom:14px">
+      <div><h2>Flujo de trabajo</h2><p>Arrastra una tarjeta a otra columna para cambiar su estado.</p></div>
+      <div class="tiny muted" id="kanbanHint">0 tareas</div>
+    </div>
+    <div id="kanbanBoard" class="tf23-kanban"></div>
+  </div>
+</section>
+
+<section id="view-calendar" class="view">
+  <div class="page-banner"><div><h1>Calendario</h1><p>Visualiza tus fechas límite de un vistazo.</p></div><button class="primary" onclick="openTaskModal()">＋ Nueva tarea</button></div>
+  <div class="card calendar-card"><div class="cal-head"><div class="cal-title" id="calTitle"></div><div class="cal-actions"><button class="ghost" onclick="calendarToday()">Hoy</button><button class="icon-btn" onclick="changeMonth(-1)">‹</button><button class="icon-btn" onclick="changeMonth(1)">›</button></div></div><div class="cal-week"><div>LUN</div><div>MAR</div><div>MIÉ</div><div>JUE</div><div>VIE</div><div>SÁB</div><div>DOM</div></div><div id="calendarDays" class="cal-days"></div></div>
+</section>
+
+<section id="view-goals" class="view">
+  <div class="page-banner"><div><h1>Objetivos 🎯</h1><p>Convierte intención en progreso medible.</p></div><button class="primary" onclick="openGoalModal()">＋ Nuevo objetivo</button></div>
+  <div id="goalsGrid" class="goal-grid"></div>
+</section>
+
+<section id="view-focus" class="view">
+  <div class="page-banner"><div><h1>Focus</h1><p>Bloques de concentración para avanzar de verdad.</p></div></div>
+  <div class="focus-wrap">
+    <div class="card focus-card"><div class="tiny muted">SESIÓN ACTUAL</div><div id="timer" class="timer">25:00</div><div class="mode-tabs"><button data-mode="25" class="active">25 min</button><button data-mode="5">5 min</button><button data-mode="15">15 min</button></div><div class="timer-actions" style="margin-top:18px"><button class="primary" id="timerStart">Iniciar</button><button class="ghost" id="timerReset">Reiniciar</button></div><div class="dots" id="focusDots"></div></div>
+    <div class="card"><div class="card-title">Estadísticas Focus</div><div id="focusStats" style="margin-top:15px"></div><div class="section-head"><div><h2>Sesiones recientes</h2></div></div><div id="recentSessions" class="task-list"></div></div>
+  </div>
+</section>
+
+<section id="view-analytics" class="view">
+  <div class="page-banner"><div><h1>Estadísticas</h1><p>Mide lo que haces para poder mejorarlo.</p></div></div>
+  <div class="stats" id="analyticsStats"></div>
+  <div class="analytics-grid" style="margin-top:15px">
+    <div class="card"><div class="card-title">Tareas completadas — últimos 7 días</div><div id="weekChart" class="chart"></div></div>
+    <div class="card"><div class="card-title">Rendimiento</div><div id="metricList" class="metric-list" style="margin-top:15px"></div></div>
+  </div>
+  <div class="grid2" style="margin-top:15px"><div class="card"><div class="card-title">Tareas por proyecto</div><div id="projectAnalytics" class="category-list" style="margin-top:15px"></div></div><div class="card"><div class="card-title">Tareas por prioridad</div><div id="priorityAnalytics" class="category-list" style="margin-top:15px"></div></div></div>
+</section>
+
+<section id="view-achievements" class="view">
+  <div class="page-banner"><div><h1>Logros 🏆</h1><p>Cada avance cuenta. Desbloquea hitos mientras trabajas.</p></div></div>
+  <div id="achievementGrid" class="achievement-grid"></div>
+</section>
+
+<section id="view-profile" class="view">
+  <div class="page-banner"><div><h1>Mi cuenta</h1><p>Tu identidad, espacio de trabajo y herramientas de NEXORA.</p></div><button class="primary" onclick="openProfileModal()">✎ Editar perfil</button></div>
+  <div class="profile-hero"><div class="profile-avatar" id="profileAvatar">TF</div><div><h2 id="profileDisplayName">NEXORA User</h2><p id="profileEmail">Cuenta local · sin sincronización</p><span class="account-badge" id="accountBadge">CUENTA LOCAL</span></div></div>
+  <div class="profile-grid">
+    <div class="card"><div class="card-title">Resumen personal</div><div class="grid3" style="margin-top:12px"><div class="profile-stat"><b id="profileTaskCount">0</b><span>TAREAS</span></div><div class="profile-stat"><b id="profileDoneCount">0</b><span>COMPLETADAS</span></div><div class="profile-stat"><b id="profileFocusCount">0</b><span>SESIONES FOCUS</span></div></div><div class="section-head"><div><h2>Actividad reciente</h2><p>Lo último que ocurrió en tu espacio.</p></div></div><div id="activityList" class="activity-list"></div></div>
+    <div class="card"><div class="card-title">Espacio de trabajo</div><div class="setting-row"><div><b id="workspaceNameText">Mi Workspace</b><span>Nombre de tu espacio actual.</span></div><button class="ghost" onclick="editWorkspace()">Editar</button></div><div class="section-head" style="margin-top:15px"><div><h2>Miembros</h2><p>Preparado para colaboración.</p></div><button class="ghost" onclick="addMember()">＋ Añadir</button></div><div id="memberList" class="member-list"></div><div class="cloud-note" style="margin-top:12px"><b>☁️ Sincronización en la nube</b><br>La interfaz está preparada para una futura cuenta online. La sincronización real requiere un backend/autenticación; esta versión mantiene tus datos localmente para que funcione sin API.</div></div>
+  </div>
+  <div class="pro-banner"><h2>NEXORA Pro</h2><p>La base ya está preparada para convertir estas funciones en un plan premium cuando conectemos autenticación, pagos y backend.</p><div class="pro-pills"><span class="pro-pill">☁ Sync</span><span class="pro-pill">👥 Equipos</span><span class="pro-pill">🔗 Compartir</span><span class="pro-pill">📊 Analytics Pro</span><span class="pro-pill">🤖 Automatizaciones</span></div><button class="primary" onclick="showToast('Modo Pro: interfaz preparada para la futura versión SaaS')">Ver capacidades Pro</button></div>
+</section>
+
+<section id="view-settings" class="view">
+  <div class="page-banner"><div><h1>Configuración</h1><p>Personaliza NEXORA y protege tus datos.</p></div></div>
+  <div class="settings-grid">
+    <div class="card"><div class="card-title">Apariencia</div>
+      <div class="setting-row"><div><b>Tema oscuro</b><span>Reduce el brillo de la interfaz.</span></div><button class="switch" id="darkSwitch" onclick="toggleTheme()"><i></i></button></div>
+      <div class="setting-row"><div><b>Notificaciones</b><span>Avisos del navegador cuando terminen sesiones.</span></div><button class="switch" id="notifySwitch" onclick="requestNotifications()"><i></i></button></div>
+    </div>
+    <div class="card"><div class="card-title">Datos</div>
+      <div class="setting-row"><div><b>Exportar backup</b><span>Descarga tareas, proyectos, objetivos y sesiones.</span></div><button class="ghost" onclick="exportData()">Exportar</button></div>
+      <div class="setting-row"><div><b>Importar backup</b><span>Restaura un archivo JSON de NEXORA.</span></div><button class="ghost" onclick="document.getElementById('importFile').click()">Importar</button></div>
+      <div class="setting-row"><div><b>Eliminar todos los datos</b><span>Esta acción no se puede deshacer.</span></div><button class="ghost danger" onclick="clearData()">Eliminar</button></div>
+      <input id="importFile" type="file" accept=".json,application/json" hidden>
+    </div>
+  </div>
+  <div class="settings-grid" style="margin-top:15px">
+    <div class="card"><div class="card-title">Aplicación</div><div class="install-status"><div><b>📱 NEXORA PWA</b><div class="tiny muted"><span class="status-dot"></span><span id="pwaStatus">Comprobando instalación...</span></div></div><button class="ghost" id="installBtn" onclick="installPWA()" style="display:none">Instalar</button></div></div>
+    <div class="card"><div class="card-title">Compartir</div><div class="setting-row"><div><b>Compartir proyecto</b><span>Exporta un proyecto como archivo portable o usa el menú compartir del dispositivo.</span></div><button class="ghost" onclick="shareProject()">Compartir</button></div></div>
+  </div>
+  <div class="card" style="margin-top:15px"><div class="card-title">Sobre NEXORA</div><p class="tiny muted" style="line-height:1.7">NEXORA V2.5 funciona sin APIs externas y guarda tus datos en este navegador. Está diseñado como una base sólida para evolucionar hacia cuentas, sincronización y una aplicación SaaS completa.</p></div>
+</section>
+</div>
+</main>
+</div>
+
+<nav class="mobile-nav" id="mobileNav">
+  <button data-view="dashboard" class="active"><span>⌂</span>Inicio</button><button data-view="today"><span>☀</span>Mi día</button><button data-view="tasks"><span>✓</span>Tareas</button><button data-view="calendar"><span>▣</span>Calendario</button><button data-view="focus"><span>◷</span>Focus</button>
+</nav>
+
+<div class="overlay" id="taskOverlay"><div class="modal">
+  <div class="modal-head"><h2 id="taskModalTitle">Nueva tarea</h2><button class="close" onclick="closeModal('taskOverlay')">×</button></div>
+  <form id="taskForm"><input type="hidden" id="taskId">
+    <div class="form-grid">
+      <div class="field full"><label>TÍTULO *</label><input id="taskTitle" required maxlength="140" placeholder="Ej. Terminar landing page"></div>
+      <div class="field full"><label>DESCRIPCIÓN</label><textarea id="taskDescription" maxlength="500" placeholder="Detalles opcionales..."></textarea></div>
+      <div class="field"><label>PROYECTO</label><select id="taskProject"></select></div>
+      <div class="field"><label>PRIORIDAD</label><select id="taskPriority"><option value="low">Baja</option><option value="medium" selected>Media</option><option value="high">Alta</option></select></div>
+      <div class="field"><label>FECHA</label><input type="date" id="taskDate"></div>
+      <div class="field"><label>HORA</label><input type="time" id="taskTime"></div>
+      <div class="field"><label>RECURRENCIA</label><select id="taskRecurrence"><option value="none">No repetir</option><option value="daily">Diaria</option><option value="weekly">Semanal</option><option value="monthly">Mensual</option></select></div>
+      <div class="field"><label>CATEGORÍA</label><select id="taskCategory"><option>Trabajo</option><option>Personal</option><option>Estudio</option><option>Salud</option><option>Otro</option></select></div>
+      <div class="field full"><label>SUBTAREAS</label><input id="taskSubtasks" placeholder="Separadas por coma: Diseño, Código, Pruebas"></div>
+      <div class="field"><label>ETIQUETAS</label><input id="taskTags" maxlength="180" placeholder="frontend, urgente, cliente"></div>
+      <div class="field"><label>DEPENDENCIA</label><select id="taskDependency"><option value="">Sin dependencia</option></select></div>
+      <div class="field full"><label>ADJUNTOS</label><input id="taskAttachments" type="file" multiple></div>
+      <div class="field full"><div id="existingAttachments" class="attachment-list"></div></div>
+      <label class="checkline full"><input type="checkbox" id="taskImportant"> Marcar como tarea importante</label>
+    </div>
+    <div class="modal-foot"><button type="button" class="ghost" onclick="closeModal('taskOverlay')">Cancelar</button><button class="primary">Guardar tarea</button></div>
+  </form>
+</div></div>
+
+<div class="overlay" id="projectOverlay"><div class="modal">
+  <div class="modal-head"><h2 id="projectModalTitle">Nuevo proyecto</h2><button class="close" onclick="closeModal('projectOverlay')">×</button></div>
+  <form id="projectForm"><input type="hidden" id="projectId"><div class="form-grid">
+    <div class="field full"><label>NOMBRE</label><input id="projectName" required maxlength="50" placeholder="Ej. Mi nuevo proyecto"></div>
+    <div class="field"><label>COLOR</label><input type="color" id="projectColor" value="#7c5cff" style="height:40px;padding:4px"></div>
+  </div><div class="modal-foot"><button type="button" class="ghost" onclick="closeModal('projectOverlay')">Cancelar</button><button class="primary">Guardar</button></div></form>
+</div></div>
+
+<div class="overlay" id="goalOverlay"><div class="modal">
+  <div class="modal-head"><h2 id="goalModalTitle">Nuevo objetivo</h2><button class="close" onclick="closeModal('goalOverlay')">×</button></div>
+  <form id="goalForm"><input type="hidden" id="goalId"><div class="form-grid">
+    <div class="field full"><label>OBJETIVO</label><input id="goalTitle" required maxlength="80" placeholder="Ej. Crear mi portfolio profesional"></div>
+    <div class="field full"><label>DESCRIPCIÓN</label><textarea id="goalDescription" maxlength="250" placeholder="¿Qué quieres conseguir?"></textarea></div>
+    <div class="field"><label>META</label><input type="number" id="goalTarget" min="1" value="100" required></div>
+    <div class="field"><label>PROGRESO ACTUAL</label><input type="number" id="goalCurrent" min="0" value="0" required></div>
+    <div class="field"><label>FECHA LÍMITE</label><input type="date" id="goalDeadline"></div>
+    <div class="field"><label>COLOR</label><input type="color" id="goalColor" value="#7c5cff" style="height:40px;padding:4px"></div>
+  </div><div class="modal-foot"><button type="button" class="ghost" onclick="closeModal('goalOverlay')">Cancelar</button><button class="primary">Guardar objetivo</button></div></form>
+</div></div>
+
+<div class="overlay" id="profileOverlay"><div class="modal">
+  <div class="modal-head"><h2>Editar perfil</h2><button class="close" onclick="closeModal('profileOverlay')">×</button></div>
+  <form id="profileForm"><div class="form-grid"><div class="field full"><label>NOMBRE</label><input id="profileNameInput" maxlength="50" required placeholder="Tu nombre"></div><div class="field full"><label>EMAIL</label><input id="profileEmailInput" type="email" maxlength="100" placeholder="tu@email.com"></div><div class="field full"><label>WORKSPACE</label><input id="workspaceInput" maxlength="50" placeholder="Mi Workspace"></div></div><div class="modal-foot"><button type="button" class="ghost" onclick="closeModal('profileOverlay')">Cancelar</button><button class="primary">Guardar</button></div></form>
+</div></div>
+<div class="overlay" id="commandOverlay"><div class="command-modal">
+  <div class="command-head"><div><b>Command Center</b><span>Hazlo rápido sin navegar por menús.</span></div><button class="close" onclick="closeModal('commandOverlay')">×</button></div>
+  <input id="commandInput" class="command-input" placeholder="Escribe una acción o busca una tarea..." autocomplete="off">
+  <div id="commandResults" class="command-results"></div>
+</div></div>
+<div class="overlay" id="notificationOverlay"><div class="command-modal">
+  <div class="command-head"><div><b>Notificaciones</b><span>Recordatorios y actividad reciente.</span></div><div style="display:flex;gap:6px"><button class="ghost" onclick="markNotificationsRead()">Marcar leídas</button><button class="close" onclick="closeModal('notificationOverlay')">×</button></div></div>
+  <div id="notificationList" class="notification-list"></div>
+</div></div>
+<div id="toast" class="toast"></div>
+
+<script>
+"use strict";
+
+/* =========================
+   NEXORA V2.5 — CORE
+   No external APIs.
+========================= */
+const KEYS={
+ tasks:"taskflow_tasks_v21",
+ projects:"taskflow_projects_v21",
+ sessions:"taskflow_sessions_v21",
+ settings:"taskflow_settings_v21",
+ goals:"taskflow_goals_v22",
+ notifications:"taskflow_notifications_v24",profile:"taskflow_profile_v25",members:"taskflow_members_v25"
+};
+const $=s=>document.querySelector(s), $$=s=>[...document.querySelectorAll(s)];
+const uid=()=> (crypto?.randomUUID ? crypto.randomUUID() : Date.now().toString(36)+Math.random().toString(36).slice(2));
+const todayISO=()=>{const d=new Date();return localDate(d)};
+const localDate=d=>{const x=new Date(d);return x.getFullYear()+"-"+String(x.getMonth()+1).padStart(2,"0")+"-"+String(x.getDate()).padStart(2,"0")};
+const escapeHTML=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+const load=(key,fallback)=>{try{const x=JSON.parse(localStorage.getItem(key));return x??fallback}catch{return fallback}};
+const save=(key,val)=>localStorage.setItem(key,JSON.stringify(val));
+let tasks=load(KEYS.tasks,[]);
+let projects=load(KEYS.projects,[]);
+let sessions=load(KEYS.sessions,[]);
+let settings=load(KEYS.settings,{theme:"light",notifications:false});
+let goals=load(KEYS.goals,[]);
+let notifications=load(KEYS.notifications,[]);
+let profile=load(KEYS.profile,{name:"NEXORA User",email:"",workspace:"Mi Workspace"});
+let members=load(KEYS.members,[{id:uid(),name:"Tú",email:profile.email||"Propietario",role:"Propietario"}]);
+let deferredInstallPrompt=null;
+let taskFilter="all", tagFilter="", sortOrder="smart", calDate=new Date(), timer=null, timerSeconds=1500, timerMode=25, timerRunning=false, focusCompleted=0;
+
+/* Migrate/normalize old data */
+function normalize(){
+  tasks=tasks.map(t=>({...t,id:t.id||uid(),title:t.title??t.texto??"Tarea",description:t.description??"",projectId:t.projectId||"",category:t.category||"Personal",priority:t.priority||"medium",date:t.date||"",time:t.time||"",recurrence:t.recurrence||"none",subtasks:Array.isArray(t.subtasks)?t.subtasks:[],tags:Array.isArray(t.tags)?t.tags:[],dependencyId:t.dependencyId||"",attachments:Array.isArray(t.attachments)?t.attachments:[],completed:!!t.completed,createdAt:t.createdAt||Date.now(),completedAt:t.completedAt||null,isImportant:!!t.isImportant,status:t.status||"todo",blocked:!!t.blocked}));
+  projects=projects.map(p=>({...p,id:p.id||uid(),name:p.name||"Proyecto",color:p.color||"#7c5cff",createdAt:p.createdAt||Date.now()}));
+  sessions=sessions.map(s=>({...s,id:s.id||uid(),minutes:Number(s.minutes||25),date:s.date||localDate(new Date(s.completedAt||Date.now())),completedAt:s.completedAt||Date.now()}));
+  if(!projects.length) projects=[
+    {id:uid(),name:"Personal",color:"#7c5cff",createdAt:Date.now()},
+    {id:uid(),name:"Trabajo",color:"#4285f4",createdAt:Date.now()},
+    {id:uid(),name:"Estudio",color:"#20b26b",createdAt:Date.now()}
+  ];
+  save(KEYS.tasks,tasks);save(KEYS.projects,projects);save(KEYS.sessions,sessions);save(KEYS.settings,settings);
+}
+normalize();
+tasks.forEach(t=>{if(!t.status)t.status=t.completed?"done":"todo";if(!Array.isArray(t.tags))t.tags=[];if(!Array.isArray(t.attachments))t.attachments=[];});
+save(KEYS.tasks,tasks);
+
+function initials(name){return (String(name||"TF").trim().split(/\s+/).slice(0,2).map(x=>x[0]).join("")||"TF").toUpperCase()}
+function saveProfile(){save(KEYS.profile,profile);save(KEYS.members,members);renderProfile();renderHeader()}
+function renderProfile(){
+ const name=profile.name||"NEXORA User", email=profile.email||"Cuenta local · sin sincronización";
+ ["profileDisplayName","topProfileName"].forEach(id=>{const e=$("#"+id);if(e)e.textContent=id==="topProfileName"?name:name});
+ ["profileAvatar","topAvatar"].forEach(id=>{const e=$("#"+id);if(e)e.textContent=initials(name)});
+ const em=$("#profileEmail");if(em)em.textContent=email||"Cuenta local · sin sincronización";
+ const ws=$("#workspaceNameText");if(ws)ws.textContent=profile.workspace||"Mi Workspace";
+ const tc=$("#profileTaskCount");if(tc)tc.textContent=tasks.length;
+ const dc=$("#profileDoneCount");if(dc)dc.textContent=tasks.filter(t=>t.completed).length;
+ const fc=$("#profileFocusCount");if(fc)fc.textContent=sessions.length;
+ const ml=$("#memberList");if(ml)ml.innerHTML=members.map(m=>`<div class="member"><div class="member-avatar">${escapeHTML(initials(m.name))}</div><div class="member-main"><b>${escapeHTML(m.name)}</b><span>${escapeHTML(m.email||"")}</span></div><span class="role">${escapeHTML(m.role||"Miembro")}</span>${m.id!==members[0]?.id?`<button class="mini-btn danger" onclick="removeMember('${m.id}')">×</button>`:""}</div>`).join("");
+ const al=$("#activityList");
+ const acts=[];
+ tasks.slice().sort((a,b)=>Math.max(b.createdAt||0,b.completedAt||0)-Math.max(a.createdAt||0,a.completedAt||0)).slice(0,6).forEach(t=>acts.push({icon:t.completed?"✓":"•",title:t.completed?`Completaste “${t.title}”`:`Creaste “${t.title}”`,time:t.completedAt||t.createdAt}));
+ sessions.slice().sort((a,b)=>(b.completedAt||0)-(a.completedAt||0)).slice(0,3).forEach(x=>acts.push({icon:"⏱",title:`Sesión Focus de ${x.minutes||25} min`,time:x.completedAt}));
+ acts.sort((a,b)=>(b.time||0)-(a.time||0));
+ if(al)al.innerHTML=acts.slice(0,8).map(a=>`<div class="activity"><div class="activity-icon">${a.icon}</div><div><b>${escapeHTML(a.title)}</b><span>${a.time?new Date(a.time).toLocaleString("es-DO",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"}):"Ahora"}</span></div></div>`).join("")||'<div class="empty">Todavía no hay actividad.</div>';
+}
+function openProfileModal(){$("#profileNameInput").value=profile.name||"";$("#profileEmailInput").value=profile.email||"";$("#workspaceInput").value=profile.workspace||"Mi Workspace";$("#profileOverlay").classList.add("open");setTimeout(()=>$("#profileNameInput").focus(),40)}
+$("#profileForm").addEventListener("submit",e=>{e.preventDefault();profile={name:$("#profileNameInput").value.trim()||"NEXORA User",email:$("#profileEmailInput").value.trim(),workspace:$("#workspaceInput").value.trim()||"Mi Workspace"};members[0]={...(members[0]||{}),name:profile.name,email:profile.email||"Propietario",role:"Propietario"};saveProfile();closeModal("profileOverlay");showToast("Perfil actualizado")});
+function editWorkspace(){openProfileModal()}
+function addMember(){const name=prompt("Nombre del miembro:");if(!name?.trim())return;const email=prompt("Email del miembro (opcional):")||"";members.push({id:uid(),name:name.trim(),email,role:"Colaborador"});saveProfile();showToast("Miembro añadido al espacio local")}
+function removeMember(id){members=members.filter(m=>m.id!==id);saveProfile();showToast("Miembro eliminado")}
+function shareProject(){
+ const name=prompt("¿Qué proyecto quieres compartir?",projects[0]?.name||"");if(!name)return;const p=projects.find(x=>x.name.toLowerCase()===name.toLowerCase())||projects.find(x=>x.id===name);if(!p){showToast("No encontramos ese proyecto");return}
+ const payload={type:"taskflow-project",version:"2.5",project:p,tasks:tasks.filter(t=>t.projectId===p.id),exportedAt:new Date().toISOString()};
+ const text=JSON.stringify(payload,null,2);
+ if(navigator.share){navigator.share({title:`Proyecto ${p.name} · NEXORA`,text:`Proyecto NEXORA: ${p.name}\n${tasks.filter(t=>t.projectId===p.id).length} tareas`}).catch(()=>{})}
+ const blob=new Blob([text],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download=`nexora-${p.name.replace(/[^a-z0-9]+/gi,"-").toLowerCase()}.json`;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),1000);showToast("Proyecto exportado para compartir")
+}
+function setupPWA(){
+ window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();deferredInstallPrompt=e;const b=$("#installBtn");if(b)b.style.display="inline-block";const s=$("#pwaStatus");if(s)s.textContent="Lista para instalar"});
+ window.addEventListener("appinstalled",()=>{deferredInstallPrompt=null;const b=$("#installBtn");if(b)b.style.display="none";const st=$("#pwaStatus");if(st)st.textContent="Instalada en este dispositivo"});
+ if(window.matchMedia("(display-mode: standalone)").matches){const st=$("#pwaStatus");if(st)st.textContent="Instalada como aplicación"}
+ else {const st=$("#pwaStatus");if(st)st.textContent=location.protocol==="file:"?"Abre mediante HTTPS/localhost para instalar":"Navegador compatible"}
+ if("serviceWorker" in navigator && location.protocol!=="file:")navigator.serviceWorker.register("sw.js").catch(()=>{});
+}
+async function installPWA(){if(!deferredInstallPrompt){showToast("Para instalar, abre NEXORA desde HTTPS o localhost");return}deferredInstallPrompt.prompt();await deferredInstallPrompt.userChoice;deferredInstallPrompt=null}
+
+function formatDate(s){
+ if(!s)return "Sin fecha";
+ const [y,m,d]=s.split("-");return new Date(+y,+m-1,+d).toLocaleDateString("es-DO",{day:"numeric",month:"short"});
+}
+function formatLongDate(){
+ return new Date().toLocaleDateString("es-DO",{weekday:"long",day:"numeric",month:"long",year:"numeric"});
+}
+function projectName(id){return projects.find(p=>p.id===id)?.name||"Sin proyecto"}
+function priorityBadge(p){return p==="high"?'<span class="badge b-high">Alta</span>':p==="medium"?'<span class="badge b-med">Media</span>':'<span class="badge b-low">Baja</span>'}
+function isOverdue(t){return !t.completed&&t.date&&t.date<todayISO()}
+function completedToday(){return tasks.filter(t=>t.completed&&t.completedAt&&localDate(new Date(t.completedAt))===todayISO()).length}
+function todayTasks(){return tasks.filter(t=>t.date===todayISO())}
+function totalFocusMinutes(){return sessions.reduce((a,s)=>a+Number(s.minutes||0),0)}
+function percent(a,b){return b?Math.min(100,Math.round(a/b*100)):0}
+
+
+/* NEXORA V2.3 - Kanban estable */
+function kanbanStatus(t){
+ if(t.completed)return "done";
+ if(t.status==="blocked"||t.blocked)return "blocked";
+ if(t.status==="doing"||t.status==="inprogress")return "doing";
+ return "todo";
+}
+function renderKanban(){
+ const board=$("#kanbanBoard"); if(!board)return;
+ const columns=[["todo","Por hacer"],["doing","En progreso"],["done","Completadas"],["blocked","Bloqueadas"]];
+ const total=tasks.length;
+ const hint=$("#kanbanHint"); if(hint)hint.textContent=total+" "+(total===1?"tarea":"tareas");
+ board.innerHTML=columns.map(([status,title])=>{
+   const items=tasks.filter(t=>kanbanStatus(t)===status);
+   return `<div class="tf23-column" data-status="${status}">
+     <div class="tf23-col-head"><span>${title}</span><span class="tf23-count">${items.length}</span></div>
+     <div class="tf23-drop">${items.length?items.map(kanbanCard).join(""):'<div class="tf23-empty">Suelta tareas aquí</div>'}</div>
+   </div>`;
+ }).join("");
+ board.querySelectorAll(".tf23-card").forEach(card=>{
+   card.addEventListener("dragstart",e=>{
+     e.dataTransfer.effectAllowed="move";
+     e.dataTransfer.setData("text/plain",String(card.dataset.id));
+     card.style.opacity=".45";
+   });
+   card.addEventListener("dragend",()=>card.style.opacity="1");
+   card.addEventListener("dblclick",()=>{
+     const t=tasks.find(x=>String(x.id)===String(card.dataset.id));
+     if(t)openTaskModal(false,t.id);
+   });
+ });
+ board.querySelectorAll(".tf23-column").forEach(col=>{
+   col.addEventListener("dragover",e=>{e.preventDefault();col.classList.add("drag-over")});
+   col.addEventListener("dragleave",()=>col.classList.remove("drag-over"));
+   col.addEventListener("drop",e=>{
+     e.preventDefault();col.classList.remove("drag-over");
+     const id=e.dataTransfer.getData("text/plain");
+     const t=tasks.find(x=>String(x.id)===String(id)); if(!t)return;
+     const status=col.dataset.status;
+     t.status=status; t.blocked=status==="blocked";
+     if(status==="done"){t.completed=true;t.completedAt=t.completedAt||new Date().toISOString();}
+     else{t.completed=false;t.completedAt=null;}
+     save(KEYS.tasks,tasks); renderAll();
+     showToast("Tarea movida a "+col.querySelector(".tf23-col-head span").textContent);
+   });
+ });
+}
+function kanbanCard(t){
+ const done=t.subtasks?.filter(s=>s.completed).length||0;
+ const total=t.subtasks?.length||0;
+ return `<article class="tf23-card" draggable="true" data-id="${escapeHTML(t.id)}">
+   <h4>${escapeHTML(t.title||"Sin título")}</h4>
+   <div class="tf23-meta">
+     ${priorityBadge(t.priority)}
+     ${t.date?`<span class="tf23-chip">📅 ${escapeHTML(formatDate(t.date))}</span>`:""}
+     ${t.projectId?`<span class="tf23-chip">${escapeHTML(projectName(t.projectId))}</span>`:""}
+     ${total?`<span class="tf23-chip">☑ ${done}/${total}</span>`:""}${(t.tags||[]).slice(0,3).map(tag=>`<span class="tf23-chip">#${escapeHTML(tag)}</span>`).join("")}
+   </div>
+ </article>`;
+}
+
+/* Navigation */
+const titles={dashboard:"Inicio",today:"Mi día",tasks:"Mis tareas",projects:"Proyectos",calendar:"Calendario",goals:"Objetivos",focus:"Focus",analytics:"Estadísticas",achievements:"Logros",settings:"Configuración",kanban:"Kanban",profile:"Mi cuenta"};
+function switchView(view){
+ $$(".view").forEach(v=>v.classList.toggle("active",v.id==="view-"+view));
+ $$("#sidebarNav button,#mobileNav button").forEach(b=>b.classList.toggle("active",b.dataset.view===view));
+ $("#pageTitle").textContent=titles[view]||"NEXORA";
+ window.scrollTo({top:0,behavior:"smooth"});
+ renderAll(view);
+}
+$$("[data-view]").forEach(b=>b.addEventListener("click",()=>switchView(b.dataset.view)));
+
+function renderAll(){
+ renderHeader();renderDashboard();renderToday();renderTasks();renderProjects();renderKanban();renderCalendar();renderGoals();renderFocus();renderAnalytics();renderAchievements();renderSettings();renderProfile();
+}
+function renderHeader(){
+ const h=new Date().getHours();
+ $("#greeting").textContent=(h<12?"Buenos días":h<18?"Buenas tardes":"Buenas noches")+" 👋";
+ $("#todayChip").textContent=formatLongDate();
+ $("#todaySubtitle").textContent=formatLongDate();
+}
+
+/* Dashboard */
+function renderDashboard(){
+ const total=tasks.length,pending=tasks.filter(t=>!t.completed).length,done=tasks.filter(t=>t.completed).length,prod=percent(done,total);
+ $("#dashStats").innerHTML=`
+ <div class="stat"><div class="stat-top"><span class="stat-icon">✓</span><span class="tiny muted">TOTAL</span></div><div class="label">Tareas</div><div class="value">${total}</div><div class="delta">Todas tus tareas</div></div>
+ <div class="stat"><div class="stat-top"><span class="stat-icon">◔</span><span class="tiny muted">ABIERTAS</span></div><div class="label">Pendientes</div><div class="value">${pending}</div><div class="delta">${todayTasks().filter(t=>!t.completed).length} para hoy</div></div>
+ <div class="stat"><div class="stat-top"><span class="stat-icon">★</span><span class="tiny muted">HECHAS</span></div><div class="label">Completadas</div><div class="value">${done}</div><div class="delta">${completedToday()} hoy</div></div>
+ <div class="stat"><div class="stat-top"><span class="stat-icon">🔥</span><span class="tiny muted">RACHA</span></div><div class="label">Productividad</div><div class="value">${prod}%</div><div class="delta">${getCurrentStreak()} días seguidos</div></div>`;
+ const recent=[...tasks].sort((a,b)=>b.createdAt-a.createdAt).slice(0,5);
+ $("#dashTasks").innerHTML=recent.length?recent.map(taskCompact).join(""):'<div class="empty"><div class="big">✨</div>Aún no tienes tareas. Crea la primera.</div>';
+ const tt=todayTasks(), td=tt.filter(t=>t.completed).length, important=tt.filter(t=>t.isImportant&&!t.completed).length;
+ $("#daySummary").innerHTML=`<div class="summary-ring" style="--pct:${percent(td,tt.length)}%"><div class="ring-content"><b>${percent(td,tt.length)}%</b><span>HOY</span></div></div><div class="mini-grid"><div class="mini"><b>${td}</b><span>Hechas</span></div><div class="mini"><b>${tt.length-td}</b><span>Pendientes</span></div><div class="mini"><b>${important}</b><span>Importantes</span></div></div>`;
+ $("#streakCurrent").textContent=getCurrentStreak();$("#streakBest").textContent=getBestStreak();$("#focusTotal").textContent=formatHours(totalFocusMinutes());
+}
+function taskCompact(t){
+ return `<div class="task-row ${t.isImportant?"important":""}"><button class="check ${t.completed?"done":""}" onclick="toggleTask('${t.id}')">${t.completed?"✓":""}</button><div class="task-info"><div class="task-title ${t.completed?"done":""}">${escapeHTML(t.title)}</div><div class="task-meta">${priorityBadge(t.priority)}<span>${escapeHTML(projectName(t.projectId))}</span>${t.date?`<span>📅 ${formatDate(t.date)}</span>`:""}</div></div><button class="mini-btn" onclick="openTaskModal(false,'${t.id}')">⋯</button></div>`;
+}
+
+/* Today */
+function renderToday(){
+ const tt=todayTasks().sort((a,b)=>(b.isImportant-a.isImportant)||(a.completed-b.completed));
+ const imp=tt.filter(t=>t.isImportant&&!t.completed);
+ $("#todayImportant").innerHTML=imp.length?imp.map(taskCompact).join(""):'<div class="empty"><div class="big">🎯</div>No tienes prioridades marcadas.</div>';
+ const done=tt.filter(t=>t.completed).length,p=percent(done,tt.length);
+ $("#todayProgress").innerHTML=`<div class="summary-ring" style="--pct:${p}%"><div class="ring-content"><b>${p}%</b><span>COMPLETADO</span></div></div><div class="progress"><i style="width:${p}%"></i></div><p class="tiny muted" style="text-align:center;margin:9px 0 0">${done} de ${tt.length} tareas terminadas</p>`;
+ $("#todayTasks").innerHTML=tt.length?tt.map(taskLarge).join(""):'<div class="card empty"><div class="big">☀</div>Tu día está libre. ¿Qué quieres conquistar?</div>';
+}
+function taskLarge(t){
+ const sub=t.subtasks||[],sd=sub.filter(s=>s.completed).length;
+ return `<div class="task-card ${t.isImportant?"important":""}"><button class="check ${t.completed?"done":""}" onclick="toggleTask('${t.id}')">${t.completed?"✓":""}</button><div class="task-card-main"><div style="display:flex;gap:7px;align-items:center;flex-wrap:wrap"><div class="task-title ${t.completed?"done":""}" style="font-size:13px">${escapeHTML(t.title)}</div>${t.isImportant?'<span class="badge b-high">Importante</span>':""}${priorityBadge(t.priority)}</div>${t.description?`<div class="description">${escapeHTML(t.description)}</div>`:""}<div class="task-meta"><span>📁 ${escapeHTML(projectName(t.projectId))}</span>${t.date?`<span>📅 ${formatDate(t.date)}</span>`:""}${t.time?`<span>⏰ ${escapeHTML(t.time)}</span>`:""}${t.recurrence!=="none"?`<span>↻ ${recurrenceText(t.recurrence)}</span>`:""}${t.dependencyId?`<span>🔗 Depende de ${tasks.find(x=>x.id===t.dependencyId)?escapeHTML(tasks.find(x=>x.id===t.dependencyId).title):"otra tarea"}</span>`:""}</div>${(t.tags||[]).length?`<div class="task-meta">${t.tags.map(tag=>`<span class="tag-badge">#${escapeHTML(tag)}</span>`).join("")}${(t.attachments||[]).length?`<span>📎 ${t.attachments.length}</span>`:""}</div>`:""}${sub.length?`<div class="subtasks">${sub.map(s=>`<div class="subtask"><button class="subcheck ${s.completed?"done":""}" onclick="toggleSubtask('${t.id}','${s.id}')">${s.completed?"✓":""}</button><span>${escapeHTML(s.text)}</span></div><div class="progress" style="height:4px"><i style="width:${percent(sd,sub.length)}%"></i></div>`).join("")}</div>`:""}</div><div class="task-card-actions"><button class="mini-btn" onclick="toggleImportant('${t.id}')" title="Importante">★</button><button class="mini-btn" onclick="openTaskModal(false,'${t.id}')">✎</button><button class="mini-btn danger" onclick="deleteTask('${t.id}')">×</button></div></div>`;
+}
+function recurrenceText(r){return {daily:"Diaria",weekly:"Semanal",monthly:"Mensual"}[r]||""}
+
+/* Tasks */
+function renderTasks(){
+ const pf=$("#projectFilter"),tf=$("#tagFilter"),so=$("#sortTasks");
+ if(pf){const old=pf.value;pf.innerHTML='<option value="all">Todos los proyectos</option>'+projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join("");pf.value=[...pf.options].some(o=>o.value===old)?old:"all";}
+ if(tf)tf.value=tagFilter; if(so)so.value=sortOrder;
+ let list=tasks.filter(t=>{
+   if(taskFilter==="today")return t.date===todayISO();
+   if(taskFilter==="pending")return !t.completed;
+   if(taskFilter==="completed")return t.completed;
+   if(taskFilter==="high")return t.priority==="high"&&!t.completed;
+   return true;
+ });
+ if(pf?.value!=="all")list=list.filter(t=>t.projectId===pf.value);
+ const q=$("#globalSearch")?.value.trim().toLowerCase();if(q)list=list.filter(t=>(t.title+" "+t.description+" "+t.category+" "+(t.tags||[]).join(" ")).toLowerCase().includes(q));
+ if(tagFilter.trim())list=list.filter(t=>(t.tags||[]).some(x=>x.toLowerCase().includes(tagFilter.trim().toLowerCase())));
+ const priorityRank={high:0,medium:1,low:2};
+ if(sortOrder==="date")list.sort((a,b)=>(a.date||"9999").localeCompare(b.date||"9999"));
+ else if(sortOrder==="priority")list.sort((a,b)=>priorityRank[a.priority]-priorityRank[b.priority]);
+ else if(sortOrder==="created")list.sort((a,b)=>b.createdAt-a.createdAt);
+ else if(sortOrder==="title")list.sort((a,b)=>a.title.localeCompare(b.title,"es"));
+ else list.sort((a,b)=>(a.completed-b.completed)||(b.isImportant-a.isImportant)||((a.date||"9999")>(b.date||"9999")?1:-1));
+ $("#tasksList").innerHTML=list.length?list.map(taskLarge).join(""):'<div class="card empty"><div class="big">📝</div>No hay tareas que coincidan con el filtro.</div>';
+}
+$$(".filter").forEach(b=>b.addEventListener("click",()=>{$$(".filter").forEach(x=>x.classList.remove("active"));b.classList.add("active");taskFilter=b.dataset.filter;renderTasks()}));
+$("#projectFilter")?.addEventListener("change",renderTasks);
+$("#globalSearch")?.addEventListener("input",renderTasks);
+$("#tagFilter")?.addEventListener("input",()=>{tagFilter=$("#tagFilter").value;renderTasks()});
+$("#sortTasks")?.addEventListener("change",()=>{sortOrder=$("#sortTasks").value;renderTasks()});
+
+/* Task CRUD */
+function openTaskModal(today=false,id=null){
+ $("#taskForm").reset();$("#taskId").value="";$("#taskModalTitle").textContent="Nueva tarea";
+ $("#taskProject").innerHTML=projects.map(p=>`<option value="${p.id}">${escapeHTML(p.name)}</option>`).join("");
+ $("#taskDate").value=today?todayISO():"";
+ if(id){
+  const t=tasks.find(x=>x.id===id);if(!t)return;
+  $("#taskModalTitle").textContent="Editar tarea";$("#taskId").value=t.id;$("#taskTitle").value=t.title;$("#taskDescription").value=t.description;$("#taskProject").value=t.projectId;$("#taskPriority").value=t.priority;$("#taskDate").value=t.date;$("#taskTime").value=t.time;$("#taskRecurrence").value=t.recurrence;$("#taskCategory").value=t.category;$("#taskSubtasks").value=(t.subtasks||[]).map(s=>s.text).join(", ");$("#taskImportant").checked=t.isImportant;$("#taskTags").value=(t.tags||[]).join(", ");
+  renderDependencyOptions(t.id,t.dependencyId); renderExistingAttachments(t.attachments||[]);
+ } else { renderDependencyOptions("",""); renderExistingAttachments([]); }
+ $("#taskOverlay").classList.add("open");setTimeout(()=>$("#taskTitle").focus(),50);
+}
+$("#taskForm").addEventListener("submit",async e=>{
+ e.preventDefault();const id=$("#taskId").value;const existing=id?(tasks.find(x=>x.id===id)?.attachments||[]):[];
+ const files=[...($("#taskAttachments")?.files||[])];
+ const uploaded=[];
+ for(const file of files){if(file.size>250000){showToast(file.name+" supera 250 KB");continue}uploaded.push({id:uid(),name:file.name,size:file.size,type:file.type,data:await fileToDataURL(file)})}
+ const data={title:$("#taskTitle").value.trim(),description:$("#taskDescription").value.trim(),projectId:$("#taskProject").value,priority:$("#taskPriority").value,date:$("#taskDate").value,time:$("#taskTime").value,recurrence:$("#taskRecurrence").value,category:$("#taskCategory").value,isImportant:$("#taskImportant").checked,tags:$("#taskTags").value.split(",").map(x=>x.trim().toLowerCase()).filter(Boolean).filter((x,i,a)=>a.indexOf(x)===i),dependencyId:$("#taskDependency").value,attachments:[...existing,...uploaded]};
+ const subtasks=$("#taskSubtasks").value.split(",").map(x=>x.trim()).filter(Boolean).map(text=>({id:uid(),text,completed:false}));
+ if(id){const t=tasks.find(x=>x.id===id);const oldSub=t.subtasks||[];data.subtasks=subtasks.map(s=>{const old=oldSub.find(o=>o.text===s.text);return old?{...s,id:old.id,completed:old.completed}:s});Object.assign(t,data)}else tasks.unshift({id:uid(),...data,subtasks,completed:false,createdAt:Date.now(),completedAt:null,status:"todo",blocked:false});
+ save(KEYS.tasks,tasks);closeModal("taskOverlay");renderAll();addNotification(id?"Tarea actualizada":"Nueva tarea",data.title,id?"Se actualizó una tarea.":"La tarea fue creada.");showToast(id?"Tarea actualizada":"Tarea creada");
+});
+function fileToDataURL(file){return new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(r.result);r.onerror=reject;r.readAsDataURL(file)})}
+function renderDependencyOptions(currentId,selected){const el=$("#taskDependency");if(!el)return;el.innerHTML='<option value="">Sin dependencia</option>'+tasks.filter(t=>String(t.id)!==String(currentId)&&!t.completed).map(t=>`<option value="${escapeHTML(t.id)}">${escapeHTML(t.title)}</option>`).join("");el.value=selected||""}
+function renderExistingAttachments(items){const el=$("#existingAttachments");if(!el)return;el.innerHTML=items.length?items.map(a=>`<span class="attachment-chip">📎 ${escapeHTML(a.name)} <button type="button" onclick="downloadAttachment('${a.id}')">↧</button><button type="button" onclick="removeAttachment('${a.id}')">×</button></span>`).join(""):'<span class="tiny muted">Ningún adjunto guardado.</span>'}
+function downloadAttachment(id){const tid=$("#taskId").value;const t=tasks.find(x=>x.id===tid);const a=t?.attachments?.find(x=>x.id===id);if(!a?.data)return;const link=document.createElement("a");link.href=a.data;link.download=a.name;link.click()}
+function removeAttachment(id){const tid=$("#taskId").value;const t=tasks.find(x=>x.id===tid);if(!t)return;t.attachments=(t.attachments||[]).filter(a=>a.id!==id);save(KEYS.tasks,tasks);renderExistingAttachments(t.attachments);showToast("Adjunto eliminado")}
+function toggleTask(id){
+ const t=tasks.find(x=>x.id===id);if(!t)return;if(!t.completed&&t.dependencyId){const dep=tasks.find(x=>x.id===t.dependencyId);if(dep&&!dep.completed){showToast("Primero completa la tarea de la que depende");return}}t.completed=!t.completed;t.completedAt=t.completed?Date.now():null;
+ if(t.completed&&t.recurrence!=="none"&&t.date){
+  const d=new Date(t.date+"T12:00:00");if(t.recurrence==="daily")d.setDate(d.getDate()+1);if(t.recurrence==="weekly")d.setDate(d.getDate()+7);if(t.recurrence==="monthly")d.setMonth(d.getMonth()+1);
+  tasks.push({...t,id:uid(),date:localDate(d),completed:false,completedAt:null,createdAt:Date.now(),subtasks:(t.subtasks||[]).map(s=>({...s,id:uid(),completed:false}))});
+ }
+ save(KEYS.tasks,tasks);renderAll();checkAchievements();if(t.completed)addNotification("Tarea completada",t.title,t.id);showToast(t.completed?"Tarea completada ✓":"Tarea reabierta");
+}
+function toggleImportant(id){const t=tasks.find(x=>x.id===id);if(!t)return;t.isImportant=!t.isImportant;save(KEYS.tasks,tasks);renderAll()}
+function toggleSubtask(tid,sid){const t=tasks.find(x=>x.id===tid),s=t?.subtasks?.find(x=>x.id===sid);if(!s)return;s.completed=!s.completed;save(KEYS.tasks,tasks);renderAll()}
+function deleteTask(id){if(!confirm("¿Eliminar esta tarea?"))return;tasks=tasks.filter(t=>t.id!==id);save(KEYS.tasks,tasks);renderAll();showToast("Tarea eliminada")}
+
+/* Projects */
+function renderProjects(){
+ $("#projectGrid").innerHTML=projects.map(p=>{
+  const list=tasks.filter(t=>t.projectId===p.id),done=list.filter(t=>t.completed).length,pc=percent(done,list.length);
+  return `<div class="project-card"><h3><span class="project-dot" style="background:${escapeHTML(p.color)}"></span>${escapeHTML(p.name)}</h3><div class="numbers"><span>${list.length} tareas</span><b>${pc}%</b></div><div class="progress"><i style="width:${pc}%"></i></div><div class="project-actions"><button class="ghost" onclick="filterProject('${p.id}')">Ver tareas</button><button class="mini-btn" onclick="openProjectModal('${p.id}')">✎</button><button class="mini-btn danger" onclick="deleteProject('${p.id}')">×</button></div></div>`;
+ }).join("")||'<div class="card empty">Crea tu primer proyecto.</div>';
+}
+function openProjectModal(id=null){$("#projectForm").reset();$("#projectId").value="";$("#projectModalTitle").textContent="Nuevo proyecto";$("#projectColor").value="#7c5cff";if(id){const p=projects.find(x=>x.id===id);$("#projectId").value=p.id;$("#projectName").value=p.name;$("#projectColor").value=p.color;$("#projectModalTitle").textContent="Editar proyecto"}$("#projectOverlay").classList.add("open")}
+$("#projectForm").addEventListener("submit",e=>{e.preventDefault();const id=$("#projectId").value,data={name:$("#projectName").value.trim(),color:$("#projectColor").value};if(id)Object.assign(projects.find(p=>p.id===id),data);else projects.push({id:uid(),...data,createdAt:Date.now()});save(KEYS.projects,projects);closeModal("projectOverlay");renderAll();showToast("Proyecto guardado")});
+function deleteProject(id){const p=projects.find(x=>x.id===id);if(!p)return;if(!confirm(`¿Eliminar "${p.name}"? Las tareas no se borrarán.`))return;projects=projects.filter(x=>x.id!==id);tasks.forEach(t=>{if(t.projectId===id)t.projectId=""});save(KEYS.projects,projects);save(KEYS.tasks,tasks);renderAll();showToast("Proyecto eliminado")}
+function filterProject(id){switchView("tasks");setTimeout(()=>{$("#projectFilter").value=id;renderTasks()},0)}
+
+/* Calendar */
+function renderCalendar(){
+ const y=calDate.getFullYear(),m=calDate.getMonth();$("#calTitle").textContent=new Date(y,m,1).toLocaleDateString("es-DO",{month:"long",year:"numeric"}).replace(/^./,x=>x.toUpperCase());
+ const first=(new Date(y,m,1).getDay()+6)%7,last=new Date(y,m+1,0).getDate(),prev=new Date(y,m,0).getDate(),cells=[];
+ for(let i=0;i<42;i++){let n=i-first+1,yy=y,mm=m;if(n<=0){n=prev+n;mm=m-1;if(mm<0){mm=11;yy--}}else if(n>last){n=n-last;mm=m+1;if(mm>11){mm=0;yy++}}const iso=localDate(new Date(yy,mm,n)),muted=mm!==m,dayTasks=tasks.filter(t=>t.date===iso).slice(0,3);cells.push(`<div class="day ${muted?"muted-day":""} ${iso===todayISO()?"today":""}" onclick="openTaskModal(false,null);setTimeout(()=>{document.getElementById('taskDate').value='${iso}'},30)"><div class="day-num">${n}</div>${dayTasks.map(t=>`<div class="day-task ${t.priority==="high"?"high":""}">${t.completed?"✓ ":""}${escapeHTML(t.title)}</div>`).join("")}</div>`)}
+ $("#calendarDays").innerHTML=cells.join("");
+}
+function changeMonth(n){calDate.setMonth(calDate.getMonth()+n);renderCalendar()}function calendarToday(){calDate=new Date();renderCalendar()}
+
+/* Goals */
+function renderGoals(){
+ if(!goals.length){$("#goalsGrid").innerHTML='<div class="card empty"><div class="big">🎯</div>No tienes objetivos todavía.<br>Define uno y empieza a medirlo.</div>';return}
+ $("#goalsGrid").innerHTML=goals.map(g=>{const p=percent(Number(g.current),Number(g.target));return `<div class="goal-card"><div class="goal-head"><div><div class="goal-title">${escapeHTML(g.title)}</div><div class="goal-desc">${escapeHTML(g.description||"Sin descripción")}</div></div><div class="goal-percent">${p}%</div></div><div class="progress"><i style="width:${p}%;background:${escapeHTML(g.color||"#7c5cff")}"></i></div><div class="goal-foot"><span>${Number(g.current)} / ${Number(g.target)}</span><span>${g.deadline?"Hasta "+formatDate(g.deadline):"Sin fecha límite"}</span></div><div class="project-actions"><button class="ghost" onclick="incrementGoal('${g.id}',1)">+1</button><button class="ghost" onclick="incrementGoal('${g.id}',-1)">−1</button><button class="mini-btn" onclick="openGoalModal('${g.id}')">✎</button><button class="mini-btn danger" onclick="deleteGoal('${g.id}')">×</button></div></div>`}).join("");
+}
+function openGoalModal(id=null){$("#goalForm").reset();$("#goalId").value="";$("#goalTarget").value=100;$("#goalCurrent").value=0;$("#goalColor").value="#7c5cff";$("#goalModalTitle").textContent="Nuevo objetivo";if(id){const g=goals.find(x=>x.id===id);Object.entries({goalId:g.id,goalTitle:g.title,goalDescription:g.description||"",goalTarget:g.target,goalCurrent:g.current,goalDeadline:g.deadline||"",goalColor:g.color||"#7c5cff"}).forEach(([k,v])=>$("#"+k).value=v);$("#goalModalTitle").textContent="Editar objetivo"}$("#goalOverlay").classList.add("open")}
+$("#goalForm").addEventListener("submit",e=>{e.preventDefault();const id=$("#goalId").value,data={title:$("#goalTitle").value.trim(),description:$("#goalDescription").value.trim(),target:Math.max(1,Number($("#goalTarget").value)),current:Math.max(0,Number($("#goalCurrent").value)),deadline:$("#goalDeadline").value,color:$("#goalColor").value};if(id)Object.assign(goals.find(g=>g.id===id),data);else goals.push({id:uid(),...data,createdAt:Date.now()});save(KEYS.goals,goals);closeModal("goalOverlay");renderAll();checkAchievements();showToast("Objetivo guardado")});
+function incrementGoal(id,n){const g=goals.find(x=>x.id===id);if(!g)return;g.current=Math.max(0,Math.min(Number(g.target),Number(g.current)+n));save(KEYS.goals,goals);renderAll();checkAchievements()}
+function deleteGoal(id){if(!confirm("¿Eliminar este objetivo?"))return;goals=goals.filter(g=>g.id!==id);save(KEYS.goals,goals);renderAll()}
+
+/* Focus */
+function formatTime(s){return String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0")}
+function formatHours(min){return min<60?min+"m":Math.floor(min/60)+"h"+(min%60?String(min%60).padStart(2,"0"):"")}
+function renderFocus(){
+ $("#timer").textContent=formatTime(timerSeconds);$("#focusDots").innerHTML=Array.from({length:4},(_,i)=>`<span class="dot ${i<focusCompleted%4?"on":""}"></span>`).join("");
+ $("#focusStats").innerHTML=`<div class="mini-grid"><div class="mini"><b>${sessions.length}</b><span>Sesiones</span></div><div class="mini"><b>${formatHours(totalFocusMinutes())}</b><span>Tiempo</span></div><div class="mini"><b>${focusCompleted}</b><span>En esta tanda</span></div></div>`;
+ $("#recentSessions").innerHTML=sessions.slice(-5).reverse().map(s=>`<div class="task-row"><div class="stat-icon">⏱</div><div class="task-info"><div class="task-title">${s.minutes} min de Focus</div><div class="task-meta"><span>${formatDate(s.date)}</span></div></div></div>`).join("")||'<div class="empty">Todavía no hay sesiones.</div>';
+}
+$$("[data-mode]").forEach(b=>b.addEventListener("click",()=>{if(timerRunning)return;$$("[data-mode]").forEach(x=>x.classList.remove("active"));b.classList.add("active");timerMode=Number(b.dataset.mode);timerSeconds=timerMode*60;renderFocus()}));
+$("#timerStart").addEventListener("click",()=>{if(timerRunning){pauseTimer();return}startTimer()});
+$("#timerReset").addEventListener("click",()=>{pauseTimer();timerSeconds=timerMode*60;renderFocus()});
+function startTimer(){timerRunning=true;$("#timerStart").textContent="Pausar";timer=setInterval(()=>{timerSeconds--;renderFocus();if(timerSeconds<=0){finishFocus()}},1000)}
+function pauseTimer(){timerRunning=false;clearInterval(timer);timer=null;$("#timerStart").textContent="Iniciar"}
+function finishFocus(){pauseTimer();sessions.push({id:uid(),minutes:timerMode,date:todayISO(),completedAt:Date.now()});save(KEYS.sessions,sessions);focusCompleted++;timerSeconds=timerMode*60;renderAll();notify("Focus terminado","Buen trabajo. Tómate un pequeño descanso.");showToast("Sesión Focus completada ✓");checkAchievements()}
+
+/* Analytics */
+function renderAnalytics(){
+ const done=tasks.filter(t=>t.completed).length,total=tasks.length,overdue=tasks.filter(isOverdue).length,high=tasks.filter(t=>t.priority==="high"),highDone=high.filter(t=>t.completed).length,subs=tasks.flatMap(t=>t.subtasks||[]),subDone=subs.filter(s=>s.completed).length;
+ $("#analyticsStats").innerHTML=`<div class="stat"><div class="label">Tasa de finalización</div><div class="value">${percent(done,total)}%</div><div class="progress"><i style="width:${percent(done,total)}%"></i></div></div><div class="stat"><div class="label">Vencidas</div><div class="value">${overdue}</div><div class="delta ${overdue?"danger":""}">${overdue?"Necesitan atención":"Todo bajo control"}</div></div><div class="stat"><div class="label">Alta prioridad</div><div class="value">${percent(highDone,high.length)}%</div><div class="delta">${highDone}/${high.length||0} completadas</div></div><div class="stat"><div class="label">Subtareas</div><div class="value">${percent(subDone,subs.length)}%</div><div class="delta">${subDone}/${subs.length||0} terminadas</div></div>`;
+ const days=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const iso=localDate(d),count=tasks.filter(t=>t.completed&&t.completedAt&&localDate(new Date(t.completedAt))===iso).length;days.push({d,count,label:d.toLocaleDateString("es-DO",{weekday:"short"}).replace(".","")})}
+ const max=Math.max(1,...days.map(x=>x.count));$("#weekChart").innerHTML=days.map(x=>`<div class="bar-col"><span class="bar-value">${x.count}</span><div class="bar" style="height:${Math.max(3,x.count/max*125)}px"></div><span class="bar-label">${x.label}</span></div>`).join("");
+ $("#metricList").innerHTML=`<div class="metric-row"><span>Racha actual</span><b>${getCurrentStreak()} días</b></div><div class="metric-row"><span>Mejor racha</span><b>${getBestStreak()} días</b></div><div class="metric-row"><span>Focus total</span><b>${formatHours(totalFocusMinutes())}</b></div><div class="metric-row"><span>Sesiones Focus</span><b>${sessions.length}</b></div><div class="metric-row"><span>Tareas importantes abiertas</span><b>${tasks.filter(t=>t.isImportant&&!t.completed).length}</b></div>`;
+ const pc=projects.map(p=>({name:p.name,count:tasks.filter(t=>t.projectId===p.id).length})).filter(x=>x.count).sort((a,b)=>b.count-a.count);$("#projectAnalytics").innerHTML=pc.length?pc.map(x=>catRow(x.name,x.count,total)).join(""):'<div class="empty">Sin datos.</div>';
+ const ps=[["Alta",high.length],["Media",tasks.filter(t=>t.priority==="medium").length],["Baja",tasks.filter(t=>t.priority==="low").length]];$("#priorityAnalytics").innerHTML=ps.map(x=>catRow(x[0],x[1],total)).join("");
+}
+function catRow(name,count,total){return `<div class="cat-row"><span>${escapeHTML(name)}</span><div class="cat-bar"><i style="width:${percent(count,total)}%"></i></div><b>${count}</b></div>`}
+
+/* Streaks */
+function productiveDates(){
+ const set=new Set(tasks.filter(t=>t.completed&&t.completedAt).map(t=>localDate(new Date(t.completedAt))));
+ sessions.forEach(s=>{if(s.date)set.add(s.date)});return set;
+}
+function getCurrentStreak(){
+ const set=productiveDates();let d=new Date(),cur=0;
+ if(!set.has(localDate(d))){d.setDate(d.getDate()-1);if(!set.has(localDate(d)))return 0}
+ while(set.has(localDate(d))){cur++;d.setDate(d.getDate()-1)}return cur;
+}
+function getBestStreak(){
+ const arr=[...productiveDates()].sort();if(!arr.length)return 0;let best=1,cur=1;
+ for(let i=1;i<arr.length;i++){const a=new Date(arr[i-1]+"T12:00:00"),b=new Date(arr[i]+"T12:00:00");if(Math.round((b-a)/86400000)===1){cur++;best=Math.max(best,cur)}else cur=1}return best;
+}
+
+/* Achievements */
+const achievementDefs=[
+ {id:"first",icon:"🌱",title:"Primer paso",desc:"Completa tu primera tarea",ok:()=>tasks.some(t=>t.completed)},
+ {id:"five",icon:"⚡",title:"En marcha",desc:"Completa 5 tareas",ok:()=>tasks.filter(t=>t.completed).length>=5},
+ {id:"ten",icon:"🚀",title:"Productivo",desc:"Completa 10 tareas",ok:()=>tasks.filter(t=>t.completed).length>=10},
+ {id:"streak3",icon:"🔥",title:"Tres días",desc:"Consigue una racha de 3 días",ok:()=>getBestStreak()>=3},
+ {id:"streak7",icon:"💎",title:"Semana perfecta",desc:"Consigue 7 días de racha",ok:()=>getBestStreak()>=7},
+ {id:"focus5",icon:"⏱️",title:"Enfocado",desc:"Completa 5 sesiones Focus",ok:()=>sessions.length>=5},
+ {id:"goal",icon:"🎯",title:"Objetivo logrado",desc:"Lleva un objetivo al 100%",ok:()=>goals.some(g=>Number(g.current)>=Number(g.target))},
+ {id:"project",icon:"📁",title:"Proyecto cerrado",desc:"Completa todas las tareas de un proyecto",ok:()=>projects.some(p=>{const x=tasks.filter(t=>t.projectId===p.id);return x.length>0&&x.every(t=>t.completed)})}
+];
+function renderAchievements(){
+ const unlocked=achievementDefs.filter(a=>a.ok()).length;$("#achievementGrid").innerHTML=achievementDefs.map(a=>`<div class="achievement ${a.ok()?"unlocked":""}"><div class="achievement-icon">${a.icon}</div><b>${a.title}</b><span>${a.desc}</span><div style="margin-top:8px;font-size:9px;font-weight:800;color:${a.ok()?"var(--green)":"var(--muted)"}">${a.ok()?"DESBLOQUEADO":"BLOQUEADO"}</div></div>`).join("");
+}
+function checkAchievements(){renderAchievements()}
+
+/* V2.4 Productivity Intelligence */
+function addNotification(title,body,taskId=""){notifications.unshift({id:uid(),title,body,taskId,read:false,createdAt:Date.now()});notifications=notifications.slice(0,40);save(KEYS.notifications,notifications);renderNotificationUI()}
+function refreshSmartNotifications(){
+ const today=todayISO();
+ tasks.filter(t=>!t.completed&&t.date===today).slice(0,6).forEach(t=>{const key="due-"+t.id+"-"+today;if(!notifications.some(n=>n.key===key)){notifications.unshift({id:uid(),key,title:"Tarea para hoy",body:t.title,taskId:t.id,read:false,createdAt:Date.now()})}});
+ tasks.filter(isOverdue).slice(0,6).forEach(t=>{const key="overdue-"+t.id+"-"+t.date;if(!notifications.some(n=>n.key===key)){notifications.unshift({id:uid(),key,title:"Tarea vencida",body:t.title,taskId:t.id,read:false,createdAt:Date.now()})}});
+ notifications=notifications.slice(0,40);save(KEYS.notifications,notifications);
+}
+function renderNotificationUI(){const unread=notifications.filter(n=>!n.read).length;const b=$("#notificationBadge");if(b)b.textContent=unread?String(Math.min(99,unread)):"";const list=$("#notificationList");if(list)list.innerHTML=notifications.length?notifications.slice(0,25).map(n=>`<div class="notification-item ${n.read?"read":"unread"}"><i class="notification-dot"></i><div class="notification-copy"><b>${escapeHTML(n.title)}</b><p>${escapeHTML(n.body)}</p><small>${new Date(n.createdAt).toLocaleString("es-DO",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</small></div>${n.taskId?`<button class="mini-btn" onclick="openTaskFromNotification('${n.taskId}')">→</button>`:""}</div>`).join(""):'<div class="empty"><div class="big">🔔</div>No tienes notificaciones.</div>'}
+function openNotifications(){refreshSmartNotifications();renderNotificationUI();$("#notificationOverlay").classList.add("open")}
+function markNotificationsRead(){notifications.forEach(n=>n.read=true);save(KEYS.notifications,notifications);renderNotificationUI()}
+function openTaskFromNotification(id){closeModal("notificationOverlay");switchView("tasks");setTimeout(()=>openTaskModal(false,id),80)}
+$("#notifyBtn").addEventListener("click",openNotifications);
+const commandActions={
+ createTask:()=>openTaskModal(),
+ createGoal:()=>openGoalModal(),
+ createProject:()=>openProjectModal(),
+ focus:()=>switchView("focus"),
+ kanban:()=>switchView("kanban"),
+ calendar:()=>switchView("calendar"),
+ analytics:()=>switchView("analytics")
+};
+function commandItems(q=""){
+ const low=q.trim().toLowerCase();const actions=[
+  ["➕","Nueva tarea","Crear una tarea","createTask"],["🎯","Nuevo objetivo","Crear un objetivo","createGoal"],["📁","Nuevo proyecto","Crear un proyecto","createProject"],["⏱","Iniciar Focus","Ir a Focus","focus"],["▦","Abrir Kanban","Ver flujo visual","kanban"],["📅","Abrir calendario","Ver fechas","calendar"],["📊","Ver estadísticas","Analizar productividad","analytics"]
+ ];
+ const out=[];actions.forEach(a=>{if(!low||(a[1]+a[2]).toLowerCase().includes(low))out.push(`<button class="command-item" data-command="${a[3]}"><span class="command-icon">${a[0]}</span><span class="command-copy"><b>${a[1]}</b><span>${a[2]}</span></span></button>`)})
+ if(low){tasks.filter(t=>(t.title+" "+(t.tags||[]).join(" ")).toLowerCase().includes(low)).slice(0,7).forEach(t=>out.push(`<button class="command-item" data-task-command="${escapeHTML(t.id)}"><span class="command-icon">✓</span><span class="command-copy"><b>${escapeHTML(t.title)}</b><span>${escapeHTML(projectName(t.projectId))} · ${t.completed?"Completada":"Pendiente"}</span></span></button>`))}
+ return out.join("")||'<div class="empty">No encontramos nada.</div>';
+}
+function openCommandCenter(){$("#commandOverlay").classList.add("open");$("#commandInput").value="";$("#commandResults").innerHTML=commandItems();setTimeout(()=>$("#commandInput").focus(),40)}
+function commandRun(action){closeModal("commandOverlay");const fn=commandActions[action];if(typeof fn==="function")fn();}
+function commandOpenTask(id){closeModal("commandOverlay");openTaskModal(false,id)}
+$("#commandInput").addEventListener("input",e=>$("#commandResults").innerHTML=commandItems(e.target.value));
+$("#commandResults").addEventListener("click",e=>{const btn=e.target.closest("[data-command],[data-task-command]");if(!btn)return;if(btn.dataset.command){commandRun(btn.dataset.command)}else if(btn.dataset.taskCommand){commandOpenTask(btn.dataset.taskCommand)}});
+
+/* Settings / Theme / Backup */
+function applyTheme(){document.body.classList.toggle("dark",settings.theme==="dark");$("#themeBtn").textContent=settings.theme==="dark"?"☀":"☾";$("#darkSwitch")?.classList.toggle("on",settings.theme==="dark")}
+function toggleTheme(){settings.theme=settings.theme==="dark"?"light":"dark";save(KEYS.settings,settings);applyTheme();renderSettings()}
+function renderSettings(){applyTheme();$("#notifySwitch")?.classList.toggle("on",settings.notifications)}
+async function requestNotifications(){
+ if(!("Notification" in window)){showToast("Las notificaciones no están disponibles en este dispositivo");return}
+ try{const p=await Notification.requestPermission();settings.notifications=p==="granted";save(KEYS.settings,settings);renderSettings();showToast(settings.notifications?"Notificaciones activadas":"Permiso de notificaciones no concedido")}catch{settings.notifications=false;save(KEYS.settings,settings);renderSettings();showToast("No se pudo solicitar el permiso")}
+}
+function notify(title,body){if(!settings.notifications||!("Notification" in window)||Notification.permission!=="granted")return;try{new Notification(title,{body})}catch{}}
+function exportData(){const data={version:"2.5",tasks,projects,sessions,settings,goals,notifications,profile,members,exportedAt:new Date().toISOString()};const blob=new Blob([JSON.stringify(data,null,2)],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(blob);a.download="nexora-backup-"+todayISO()+".json";a.click();URL.revokeObjectURL(a.href);showToast("Backup exportado")}
+$("#importFile").addEventListener("change",e=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=()=>{try{const d=JSON.parse(r.result);if(!Array.isArray(d.tasks)||!Array.isArray(d.projects))throw 0;tasks=d.tasks;projects=d.projects;sessions=Array.isArray(d.sessions)?d.sessions:[];goals=Array.isArray(d.goals)?d.goals:[];notifications=Array.isArray(d.notifications)?d.notifications:[];profile=d.profile||profile;members=Array.isArray(d.members)?d.members:members;settings=d.settings||settings;normalize();save(KEYS.profile,profile);save(KEYS.members,members);save(KEYS.goals,goals);save(KEYS.notifications,notifications);renderAll();showToast("Backup importado correctamente")}catch{showToast("El archivo no es un backup válido")}};r.readAsText(file);e.target.value=""});
+function clearData(){if(!confirm("¿Seguro que quieres borrar TODAS tus tareas, proyectos, objetivos y sesiones?"))return;localStorage.removeItem(KEYS.tasks);localStorage.removeItem(KEYS.projects);localStorage.removeItem(KEYS.sessions);localStorage.removeItem(KEYS.goals);localStorage.removeItem(KEYS.notifications);localStorage.removeItem(KEYS.profile);localStorage.removeItem(KEYS.members);location.reload()}
+
+/* Modal helpers */
+function closeModal(id){$("#"+id).classList.remove("open")}
+$$(".overlay").forEach(o=>o.addEventListener("click",e=>{if(e.target===o)closeModal(o.id)}));
+document.addEventListener("keydown",e=>{
+ if(e.key==="Escape")$$(".overlay.open").forEach(o=>closeModal(o.id));
+ if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==="k"){e.preventDefault();openCommandCenter()}
+});
+$("#themeBtn").addEventListener("click",toggleTheme);
+
+/* Toast */
+let toastTimer;function showToast(msg){const t=$("#toast");t.textContent=msg;t.classList.add("show");clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove("show"),2200)}
+
+/* Init */
+applyTheme();refreshSmartNotifications();renderAll();renderNotificationUI();setupPWA();
+</script>
+</body>
+</html>
